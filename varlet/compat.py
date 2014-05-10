@@ -13,3 +13,12 @@ try:
 except ImportError:
     class ModelMenuItemGroup(object): pass
 
+try:
+    from parsley.mixins import ParsleyAdminMixin
+except ImportError:
+    class ParsleyAdminMixin(object): pass
+
+try:
+    from thadminjones.admin import SupportsQuickAdd
+except ImportError:
+    class SupportsQuickAdd(object): pass
