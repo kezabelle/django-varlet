@@ -3,15 +3,23 @@ import logging
 from django.db.models.signals import pre_save
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
-from django.db.models.fields import BooleanField, CharField
+from django.db.models.fields import BooleanField, CharField, SlugField
 from django.utils.encoding import python_2_unicode_compatible
+from django.template import TemplateDoesNotExist
 from model_utils.models import TimeStampedModel
 from taggit.managers import TaggableManager
+from templatefinder.utils import find_all_templates
 from .utils import template_choices
 from .listeners import maybe_update_homepage
+from .querying import PageManager
+
 
 
 logger = logging.getLogger(__name__)
+
+
+class PageTemplateError(TemplateDoesNotExist):
+    pass
 
 
 @python_2_unicode_compatible
@@ -22,6 +30,7 @@ class MinimalPage(TimeStampedModel):
                            help_text=_('may be displayed in menus, instead of '
                                        'the standard title'))
     is_homepage = BooleanField(default=False, db_index=True)
+    objects = PageManager()
 
     def get_menu_title(self):
         """ utility method for `django CMS`_ api compatibility
@@ -70,17 +79,17 @@ class MinimalPage(TimeStampedModel):
 
 
 class Page(MinimalPage):
-    slug = models.SlugField(unique=True, db_index=True, max_length=255,
-                            verbose_name=_('friendly URL'),
-                            help_text=_('a human and search engine friendly '
-                                        'name for this object. Only mixed '
-                                        'case letters, numbers and dashes are '
-                                        'allowed. Once set, this cannot be '
-                                        'changed.'))
-    template = models.CharField(max_length=255, db_index=True,
-                                verbose_name=_('template'),
-                                help_text=_('templates may affect the display '
-                                            'of this page on the website.'))
+    slug = SlugField(unique=True, db_index=True, max_length=255,
+                     verbose_name=_('friendly URL'),
+                     help_text=_('a human and search engine friendly '
+                                 'name for this object. Only mixed '
+                                 'case letters, numbers and dashes are '
+                                 'allowed. Once set, this cannot be '
+                                 'changed.'))
+    template = CharField(max_length=255, db_index=True,
+                         verbose_name=_('template'),
+                         help_text=_('templates may affect the display '
+                                     'of this page on the website.'))
     
     tags = TaggableManager()
 
@@ -92,11 +101,13 @@ class Page(MinimalPage):
     @staticmethod
     def _get_template_choices():
         """ For forms ... """
-        return template_choices('pages/page/*.html')
+        return template_choices(find_all_templates('pages/page/*.html'))
                                 
     def get_template_names(self):
         """ For editregions """
-        return [self.template]
+        if not self.template:
+            raise PageTemplateError("No template set ...")
+        return (self.template,)
 
     def get_canonical_slug(self):
         """
