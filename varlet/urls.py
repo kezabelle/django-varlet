@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import url
-from .views import PageDetail, IndexPage
+from .views import PageDetail, Homepage
 
 urlpatterns = (
     url(regex=r'^(?P<slug>[-\w]+)/$',

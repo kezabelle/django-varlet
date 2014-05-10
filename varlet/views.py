@@ -53,7 +53,7 @@ class Homepage(EditRegionResponseMixin, ModelContext, DetailView):
 
     def get(self, request, *args, **kwargs):
         try:
-            return super(IndexPage, self).get(request, *args, **kwargs)
+            return super(Homepage, self).get(request, *args, **kwargs)
         except self.model.DoesNotExist as e:
             if settings.DEBUG:
                 urls = (x.get_absolute_url()
