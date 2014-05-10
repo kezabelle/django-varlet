@@ -66,7 +66,7 @@ class Homepage(EditRegionResponseMixin, ModelContext, DetailView):
                     'responds_to': (x.upper() for x in self.http_method_names),
                     'settings': settings.SETTINGS_MODULE,
                 }
-                response = self.render_to_response(context=)
+                response = self.render_to_response(context=ctx)
                 response.status_code = 404
                 return response
             # no URI was found, and we're in a live environment (DEBUG = False)
