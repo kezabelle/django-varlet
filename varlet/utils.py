@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.utils.text import capfirst
-from templatefinder.utils import find_all_templates
+#from templatefinder.utils import find_all_templates
 import re
 
 
