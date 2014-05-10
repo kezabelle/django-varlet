@@ -6,6 +6,8 @@ from editregions.admin import EditRegionInline
 from .models import Page, PageTemplateError
 from .forms import PageAdminForm
 from .compat import ParsleyAdminMixin, SupportsQuickAdd
+from .admin_filters import UsedTemplateFilter
+
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +30,9 @@ class PageAdmin(ParsleyAdminMixin, SupportsQuickAdd, AdminlinksMixin,
         'title',
         'is_homepage',
         'modified',
+    ]
+    list_filter = [
+       UsedTemplateFilter,
     ]
     fieldsets = [
         [None, {
