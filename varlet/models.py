@@ -1,8 +1,18 @@
 # -*- coding: utf-8 -*-
+import logging
+from django.db.models.signals import pre_save
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.fields import BooleanField, CharField
 from django.utils.encoding import python_2_unicode_compatible
 from model_utils.models import TimeStampedModel
+from taggit.managers import TaggableManager
+from .utils import template_choices
+from .listeners import maybe_update_homepage
+
+
+logger = logging.getLogger(__name__)
+
 
 @python_2_unicode_compatible
 class MinimalPage(TimeStampedModel):
@@ -57,3 +67,45 @@ class MinimalPage(TimeStampedModel):
 
     class Meta:
         abstract = True
+
+
+class Page(MinimalPage):
+    slug = models.SlugField(unique=True, db_index=True, max_length=255,
+                            verbose_name=_('friendly URL'),
+                            help_text=_('a human and search engine friendly '
+                                        'name for this object. Only mixed '
+                                        'case letters, numbers and dashes are '
+                                        'allowed. Once set, this cannot be '
+                                        'changed.'))
+    template = models.CharField(max_length=255, db_index=True,
+                                verbose_name=_('template'),
+                                help_text=_('templates may affect the display '
+                                            'of this page on the website.'))
+    
+    tags = TaggableManager()
+
+    def get_absolute_url(self):
+        if self.is_homepage:
+            return reverse('pages:index')
+        return reverse('pages:view', kwargs={'slug': self.slug})
+
+    @staticmethod
+    def _get_template_choices():
+        """ For forms ... """
+        return template_choices('pages/page/*.html')
+                                
+    def get_template_names(self):
+        """ For editregions """
+        return [self.template]
+
+    def get_canonical_slug(self):
+        """
+        django-braces CanonicalSlugDetailMixin supporting method
+        """
+        return self.slug
+
+    class Meta:
+        db_table = 'varlet_page'
+
+pre_save.connect(maybe_update_homepage, sender=Page,
+                 dispatch_uid='slugpage_maybe_update_homepage')
