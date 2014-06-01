@@ -20,7 +20,7 @@ class PageAdminForm(ModelForm):
             if len(templates) < 1:
                 logger.debug('No templates given by {cls!r}'.format(
                     cls=self._meta.model))
-                templates = BLANK_CHOICE_DASH
+            templates = BLANK_CHOICE_DASH + templates
             self.fields['template'].widget = Select(choices=templates)
 
     class Meta:
