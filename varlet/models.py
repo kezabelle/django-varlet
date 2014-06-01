@@ -90,7 +90,7 @@ class Page(MinimalPage):
                          verbose_name=_('template'),
                          help_text=_('templates may affect the display '
                                      'of this page on the website.'))
-    
+
     tags = TaggableManager()
 
     def get_absolute_url(self):
@@ -101,8 +101,8 @@ class Page(MinimalPage):
     @staticmethod
     def _get_template_choices():
         """ For forms ... """
-        return template_choices(find_all_templates('pages/page/*.html'))
-                                
+        return template_choices(find_all_templates('varlet/pages/layouts/*.html'))
+
     def get_template_names(self):
         """ For editregions """
         if not self.template:
