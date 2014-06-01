@@ -31,6 +31,7 @@ setup(
     install_requires=[
         'Django>=1.4.11',
         'django-template-finder>=0.5',
+        'django-taggit>=0.12',
         'django-model-utils>=2.0',
     ],
     tests_require=[
