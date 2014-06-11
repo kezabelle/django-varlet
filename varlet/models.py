@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
 from django.db.models.signals import pre_save
+from django.db.models import Q
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
+from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.fields import BooleanField, CharField, SlugField
@@ -114,6 +119,65 @@ class Page(MinimalPage):
         django-braces CanonicalSlugDetailMixin supporting method
         """
         return self.slug
+
+    def _get_logentries(self, *args, **kwargs):
+        """
+        Find admin log entries pertaining to this model instance
+        """
+        ct = ContentType.objects.get_for_model(self).pk
+        return (LogEntry.objects.filter(content_type_id=ct,
+                                        object_id=self.pk)
+                .filter(*args, **kwargs)
+                .select_related('user')
+                .order_by('-action_time'))
+
+    def _get_best_logentry_user(self, *args, **kwargs):
+        """
+        Ask for just one log entry, matching *args and **kwargs
+        as a LogEntry filter
+        """
+        if self._state.adding:
+            return AnonymousUser()
+        lazy_entries = self._get_logentries(*args, **kwargs)
+        evaluated_entries = tuple(lazy_entries[:1])
+        try:
+            user = evaluated_entries[0].user
+            # user might be None under 1.4 rather than raising DoesNotExist.
+            if user is None:
+                return AnonymousUser()
+            return user
+        except IndexError:
+            logger.debug('Log entry not found for %r' % self)
+            return AnonymousUser()
+        except ObjectDoesNotExist:
+            logger.debug('User not found for the log entry for %r' % self)
+            return AnonymousUser()
+
+    def editor(self):
+        """
+        Returns the last user whose change was recorded in the admin log,
+        or anonymous user if none exist, or the user no longer exists.
+
+        If the model instance has not yet been saved into the database,
+        it'll return an anonymous user.
+
+        Other exceptions will bubble up.
+        """
+        adds_and_changes = Q(action_flag=ADDITION) | Q(action_flag=CHANGE)
+        return self._get_best_logentry_user(adds_and_changes)
+
+    def author(self):
+        """
+        Returns the first user who added this in the admin log,
+        or anonymous user if none exist, or the user no longer exists.
+
+        If the model instance has not yet been saved into the database,
+        it'll return an anonymous user.
+
+        Other exceptions will bubble up.
+        """
+        adds_and_changes = Q(action_flag=ADDITION)
+        return self._get_best_logentry_user(adds_and_changes)
 
     class Meta:
         db_table = 'varlet_page'
