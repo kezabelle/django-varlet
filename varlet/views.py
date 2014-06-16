@@ -11,7 +11,25 @@ from .models import Page
 logger = logging.getLogger(__name__)
 
 
-class PageDetail(EditRegionResponseMixin, ModelContext, DetailView):
+class PageBase(EditRegionResponseMixin, ModelContext, DetailView):
+    def get_context_data(self, **kwargs):
+        context = super(PageBase, self).get_context_data(**kwargs)
+        missing_request = 'request' not in context
+        missing_processor = ('django.core.context_processors.request'
+                             not in settings.TEMPLATE_CONTEXT_PROCESSORS)
+        if missing_request and missing_processor:
+            context['request'] = self.request
+        return context
+
+    def render_to_response(self, *args, **kwargs):
+        response = super(PageBase, self).render_to_response(*args, **kwargs)
+        # always declare what's available
+        if 'Allow' not in response:
+            response['Allow'] = ', '.join(self._allowed_methods())
+        return response
+
+
+class PageDetail(PageBase):
     model = Page
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -31,6 +49,9 @@ class PageDetail(EditRegionResponseMixin, ModelContext, DetailView):
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
+    def post(self, request, *args, **kwargs):
+        return self.get(request=request, *args, **kwargs)
+
     def get_template_names(self):
         return self.object.get_template_names()
 
@@ -42,7 +63,7 @@ class PageDetail(EditRegionResponseMixin, ModelContext, DetailView):
         return self.object.get_absolute_url()
 
 
-class Homepage(EditRegionResponseMixin, ModelContext, DetailView):
+class Homepage(PageBase):
     model = Page
     http_method_names = ['get', 'head', 'post']
 
@@ -74,6 +95,9 @@ class Homepage(EditRegionResponseMixin, ModelContext, DetailView):
             msg = "No homepage available"
             logger.info(msg)
             raise Http404(msg)
+
+    def post(self, request, *args, **kwargs):
+        return self.get(request=request, *args, **kwargs)
 
     def get_template_names(self):
         try:
