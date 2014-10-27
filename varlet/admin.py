@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
 import logging
 from django.contrib import admin
-from adminlinks.admin import AdminlinksMixin
-from editregions.admin import EditRegionInline
 from .models import Page, PageTemplateError
 from .forms import PageAdminForm
-from .compat import ParsleyAdminMixin, SupportsQuickAdd
 from .admin_filters import UsedTemplateFilter
 
 
 logger = logging.getLogger(__name__)
 
 
-class PageAdmin(ParsleyAdminMixin, SupportsQuickAdd, AdminlinksMixin,
-                admin.ModelAdmin):
+class PageAdminConfig(object):
     """
-    Admin for our bundled :class:`oranpage.models.Page`
+    Admin for our bundled :class:`varlet.models.Page`
     """
     form = PageAdminForm
     search_fields = ['title', 'menu_title']
@@ -32,7 +28,7 @@ class PageAdmin(ParsleyAdminMixin, SupportsQuickAdd, AdminlinksMixin,
         'modified',
     ]
     list_filter = [
-       UsedTemplateFilter,
+        UsedTemplateFilter,
     ]
     fieldsets = [
         [None, {
@@ -42,9 +38,6 @@ class PageAdmin(ParsleyAdminMixin, SupportsQuickAdd, AdminlinksMixin,
             'fields': ('template',),
         }],
 
-    ]
-    inlines = [
-        EditRegionInline,
     ]
 
     def is_homepage(self, obj):
@@ -56,7 +49,7 @@ class PageAdmin(ParsleyAdminMixin, SupportsQuickAdd, AdminlinksMixin,
         """
         only pre-populate the slug on add, not edit.
         """
-        prepops = super(PageAdmin, self).get_prepopulated_fields(request, obj)
+        prepops = super(PageAdminConfig, self).get_prepopulated_fields(request, obj)
         if obj is not None and obj.slug:
             prepops = {}
         return prepops
@@ -65,7 +58,7 @@ class PageAdmin(ParsleyAdminMixin, SupportsQuickAdd, AdminlinksMixin,
         """
         disable the slug on edit. Good URIs don't change.
         """
-        readonlys = super(PageAdmin, self).get_readonly_fields(request, obj)
+        readonlys = super(PageAdminConfig, self).get_readonly_fields(request, obj)
         if obj is not None and obj.slug:
             readonlys = tuple(readonlys[:]) + ('slug',)
         return readonlys
@@ -78,4 +71,8 @@ class PageAdmin(ParsleyAdminMixin, SupportsQuickAdd, AdminlinksMixin,
             return obj.get_template_names()
         except PageTemplateError:
             return ()
+
+
+class PageAdmin(PageAdminConfig, admin.ModelAdmin):
+    pass
 admin.site.register(Page, PageAdmin)
