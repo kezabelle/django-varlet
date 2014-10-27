@@ -45,6 +45,8 @@ def template_choices(templates, display_names=None):
     if display_names is None:
         display_names = getattr(settings, 'TEMPLATE_DISPLAY_NAMES', {})
 
+    if callable(display_names):
+        display_names = display_names()
 
     return ((template, _fix_display_title(template_path=template,
                                           template_map=display_names))
