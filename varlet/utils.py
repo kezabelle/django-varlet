@@ -8,6 +8,19 @@ import re
 to_space_re = re.compile(r'[^a-zA-Z0-9\-]+')
 
 
+def _fix_display_title(template_path, template_map):
+    if template_path in template_map:
+        return template_map[template_path]
+    # take the last part from the template path; works even if there is no /
+    lastpart = template_path.rpartition('/')[-1]
+    # take everything to the left of the rightmost . (the file extension)
+    lastpart_minus_suffix = lastpart.rpartition('.')[0]
+    # convert most non-alphanumeric characters into spaces, with the
+    # exception of hyphens.
+    lastpart_spaces = to_space_re.sub(' ', lastpart_minus_suffix)
+    return capfirst(lastpart_spaces)
+
+
 def template_choices(templates, display_names=None):
     """
     Given an iterable of `templates`, calculate human-friendly display names
@@ -32,16 +45,7 @@ def template_choices(templates, display_names=None):
     if display_names is None:
         display_names = getattr(settings, 'TEMPLATE_DISPLAY_NAMES', {})
 
-    def fix_display_title(template_path):
-        if template_path in display_names:
-            return display_names[template_path]
-        # take the last part from the template path; works even if there is no /
-        lastpart = template_path.rpartition('/')[-1]
-        # take everything to the left of the rightmost . (the file extension)
-        lastpart_minus_suffix = lastpart.rpartition('.')[0]
-        # convert most non-alphanumeric characters into spaces, with the
-        # exception of hyphens.
-        lastpart_spaces = to_space_re.sub(' ', lastpart_minus_suffix)
-        return capfirst(lastpart_spaces)
 
-    return ((template, fix_display_title(template)) for template in templates)
+    return ((template, _fix_display_title(template_path=template,
+                                          template_map=display_names))
+            for template in templates)
