@@ -12,7 +12,6 @@ from django.db.models.fields import BooleanField, CharField, SlugField
 from django.utils.encoding import python_2_unicode_compatible
 from django.template import TemplateDoesNotExist
 from model_utils.models import TimeStampedModel
-from taggit.managers import TaggableManager
 from templatefinder.utils import find_all_templates
 from .utils import template_choices
 from .listeners import maybe_update_homepage
@@ -94,8 +93,6 @@ class Page(MinimalPage):
                          verbose_name=_('template'),
                          help_text=_('templates may affect the display '
                                      'of this page on the website.'))
-
-    tags = TaggableManager()
 
     def get_absolute_url(self):
         if self.is_homepage:
