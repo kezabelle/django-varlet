@@ -19,7 +19,6 @@ from .listeners import maybe_update_homepage
 from .querying import PageManager
 
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -106,7 +105,8 @@ class Page(MinimalPage):
     @staticmethod
     def _get_template_choices():
         """ For forms ... """
-        return template_choices(find_all_templates('varlet/pages/layouts/*.html'))
+        layout_dir = 'varlet/pages/layouts/*.html'
+        return template_choices(find_all_templates(pattern=layout_dir))
 
     def get_template_names(self):
         """ For editregions """

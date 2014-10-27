@@ -15,8 +15,7 @@ class UsedTemplateFilter(SimpleListFilter):
         bad_entries = Q(template=None) | Q(template='')
         templates = tuple(model_admin.model.objects.exclude(bad_entries)
                           .values_list('template', flat=True))
-        return template_choices(templates)
-        
+        return template_choices(templates=templates, display_names=None)
 
     def queryset(self, request, queryset):
         if self.parameter_name in self.used_parameters:
