@@ -2,6 +2,7 @@
 from datetime import datetime
 import logging
 from django.contrib.sitemaps import Sitemap
+from django.utils import timezone
 from .models import Page
 
 
@@ -21,7 +22,7 @@ class MinimalPageSitemap(Sitemap):
         return obj.modified
 
     def changefreq(self, obj):
-        datediff = datetime.today() - obj.modified
+        datediff = timezone.now() - obj.modified
         if datediff.days < 3:
             return 'daily'
         if datediff.days <= 7:
