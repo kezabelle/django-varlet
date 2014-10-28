@@ -8,10 +8,10 @@ try:
 except ImportError:
     class EditRegionResponseMixin(object): pass
 
-try:
-    from menuhin.models import ModelMenuItemGroup
-except ImportError:
-    class ModelMenuItemGroup(object): pass
+# try:
+#     from menuhin.models import ModelMenuItemGroup
+# except ImportError:
+#     class ModelMenuItemGroup(object): pass
 
 try:
     from parsley.mixins import ParsleyAdminMixin

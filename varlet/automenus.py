@@ -1,4 +1,5 @@
-from .compact import ModelMenuItemGroup
+from menuhin.models import ModelMenuItemGroup
+from .models import Page
 
 
 class PageMenu(ModelMenuItemGroup):
