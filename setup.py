@@ -32,6 +32,7 @@ setup(
         'Django>=1.4.11',
         'django-template-finder>=0.5',
         'django-model-utils>=2.0',
+        'django-classy-tags>=0.5.1',
     ],
     tests_require=[
         "Django>=1.4.11",
