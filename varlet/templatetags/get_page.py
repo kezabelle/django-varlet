@@ -27,9 +27,12 @@ class GetPage(AsTag):
         Argument('varname', resolve=False, required=True),
     )
 
+    def get_page_object(self, slug):
+        return Page.objects.get(slug=slug)
+
     def get_value(self, context, slug):
         try:
-            return Page.objects.get(slug=slug)
+            return self.get_page_object(slug=slug)
         except (Page.DoesNotExist, Page.MultipleObjectsReturned) as e:
             debug_enabled = settings.DEBUG and settings.TEMPLATE_DEBUG
             if debug_enabled and settings.DEBUG_PROPAGATE_EXCEPTIONS:
@@ -38,3 +41,11 @@ class GetPage(AsTag):
                          "database".format(slug=slug), exc_info=1)
             return None
 register.tag(GetPage)
+
+
+class GetHomepage(GetPage):
+    name = 'get_homepage'
+
+    def get_page_object(self, slug):
+        return Page.objects.get_homepage()
+register.tag(GetHomepage)
