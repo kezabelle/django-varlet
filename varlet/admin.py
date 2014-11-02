@@ -4,6 +4,11 @@ from django.contrib import admin
 from .models import Page, PageTemplateError
 from .forms import PageAdminForm
 from .admin_filters import UsedTemplateFilter
+try:
+    from .checks import PageAdminConfigChecks
+except ImportError:
+    def PageAdminConfigChecks():
+        return True
 
 
 logger = logging.getLogger(__name__)
@@ -75,5 +80,5 @@ class PageAdminConfig(object):
 
 
 class PageAdmin(PageAdminConfig, admin.ModelAdmin):
-    pass
+    checks_class = PageAdminConfigChecks
 admin.site.register(Page, PageAdmin)
