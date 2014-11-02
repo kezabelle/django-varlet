@@ -16,7 +16,7 @@ class PageAdminForm(ModelForm):
         # my AdminlinksMixin edit_field form
         if 'template' in self.fields:
             # we may get an AdminTextInputWidget if no choices are defined
-            templates = list(self._meta.model._get_template_choices())
+            templates = list(self._meta.model.get_template_choices())
             if len(templates) < 1:
                 logger.debug('No templates given by {cls!r}'.format(
                     cls=self._meta.model))

@@ -57,7 +57,7 @@ class MinimalPage(TimeStampedModel):
         return self.title
 
     @staticmethod
-    def _get_template_choices():
+    def get_template_choices():
         msg = ("Concrete (non-abstract) classes should implement this to "
                "return a list of 2-tuples, representing `template name` "
                "and `display value` for forms.")
@@ -100,8 +100,8 @@ class Page(MinimalPage):
         return reverse('pages:view', kwargs={'slug': self.slug})
 
     @staticmethod
-    def _get_template_choices():
-        """ For forms ... """
+    def get_template_choices():
+        """ For editregions forms ... """
         layout_dir = 'varlet/pages/layouts/*.html'
         return template_choices(find_all_templates(pattern=layout_dir))
 

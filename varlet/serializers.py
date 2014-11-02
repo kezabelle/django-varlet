@@ -5,11 +5,11 @@ from .models import Page
 
 class PageSerializer(serializers.HyperlinkedModelSerializer):
     object_url = serializers.HyperlinkedIdentityField(view_name='pages:view')
-    template = serializers.ChoiceField(choices=Page._get_template_choices())
+    template = serializers.ChoiceField(choices=Page.get_template_choices())
     possible_templates = serializers.SerializerMethodField('get_possible_templates')
 
     def get_possible_templates(self, obj):
-        for value, key in obj._get_template_choices():
+        for value, key in obj.get_template_choices():
             yield {
                 'description': key,
                 'path': value,

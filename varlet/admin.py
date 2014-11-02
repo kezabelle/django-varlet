@@ -46,30 +46,31 @@ class PageAdminConfig(object):
     is_homepage.admin_order_field = 'is_homepage'
 
     def get_prepopulated_fields(self, request, obj=None):
-        """
-        only pre-populate the slug on add, not edit.
-        """
+        """ only pre-populate the slug on add, not edit. """
         prepops = super(PageAdminConfig, self).get_prepopulated_fields(request, obj)
         if obj is not None and obj.slug:
             prepops = {}
         return prepops
 
     def get_readonly_fields(self, request, obj=None):
-        """
-        disable the slug on edit. Good URIs don't change.
-        """
+        """ disable the slug on edit. Good URIs don't change. """
         readonlys = super(PageAdminConfig, self).get_readonly_fields(request, obj)
         if obj is not None and obj.slug:
             readonlys = tuple(readonlys[:]) + ('slug',)
         return readonlys
 
     def get_editregions_templates(self, obj):
-        """
-        API requirement for ``django-editregions``
-        """
+        """ API requirement for ``django-editregions`` """
         try:
             return obj.get_template_names()
         except PageTemplateError:
+            return ()
+
+    def get_editregions_template_choices(self, obj):
+        """ API requirement for ``django-editregions`` """
+        try:
+            return tuple(x[0] for x in obj.get_template_choices())
+        except AttributeError:
             return ()
 
 
