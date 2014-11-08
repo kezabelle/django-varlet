@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 from django.conf import settings
+from django.core.urlresolvers import reverse, NoReverseMatch
 from .models import Page
 
 
@@ -8,6 +9,13 @@ logger = logging.getLogger(__name__)
 
 
 def get_homepage(request):
+    try:
+        admin_url = (reverse('admin:index'),)
+    except NoReverseMatch:
+        admin_url = ()
+    if request.path.startswith(admin_url):
+        return {'HOMEPAGE': None}
+
     # TODO: make this lazy but only evaluated once, if possible.
     def wrapped_db_query():
         try:
