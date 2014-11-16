@@ -13,5 +13,14 @@ move a page from one place to another.
 The homepage is never accessible via it's slug, instead living at the root
 of whatever URL namespace might be in use (eg: ``/myurlprefix/``)
 
+Status
+------
+
+It seems to work, but here's a badge that indicates how much of a
+liar I might be:
+
+.. image:: https://travis-ci.org/kezabelle/django-varlet.svg?branch=master
+  :target: https://travis-ci.org/kezabelle/django-varlet
+
 .. _django-metaknight: https://github.com/kezabelle/django-metaknight
 .. _django-editregions: https://github.com/kezabelle/django-editregions
