@@ -83,8 +83,8 @@ class Homepage(PageBase):
                     'verbose_name': self.model._meta.verbose_name,
                     'verbose_name_plural': self.model._meta.verbose_name_plural,
                     'urls': urls,
-                    'admin_namespace': admin.site._registry[self.model],
-                    'responds_to': (x.upper() for x in self.http_method_names),
+                    'responds_to': (x.upper()
+                                    for x in sorted(self.http_method_names)),
                     'settings': settings.SETTINGS_MODULE,
                 }
                 response = self.render_to_response(context=ctx)
