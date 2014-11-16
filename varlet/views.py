@@ -25,7 +25,12 @@ class PageBase(EditRegionResponseMixin, ModelContext, DetailView):
         response = super(PageBase, self).render_to_response(*args, **kwargs)
         # always declare what's available
         if 'Allow' not in response:
-            response['Allow'] = ', '.join(sorted(self._allowed_methods()))
+            try:
+                methods = self._allowed_methods()
+            except AttributeError:  # Django < 1.5
+                methods = [m.upper() for m in self.http_method_names
+                           if hasattr(self, m)]
+            response['Allow'] = ', '.join(sorted(methods))
         return response
 
 
