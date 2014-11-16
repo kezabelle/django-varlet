@@ -3,7 +3,6 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.contrib.admin.options import IncorrectLookupParameters
 from django.utils.translation import ugettext_lazy as _
-from .models import Page
 from .utils import template_choices
 
 
