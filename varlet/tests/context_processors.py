@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.test import TestCase as TestCaseUsingDB, override_settings
+from django.test import TestCase as TestCaseUsingDB
+from django.test.utils import override_settings
 from django.test.client import RequestFactory
 from model_mommy import mommy
 from varlet.context_processors import get_homepage

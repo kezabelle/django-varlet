@@ -3,7 +3,8 @@ from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.template import TemplateDoesNotExist
 from django.template.response import TemplateResponse
-from django.test import TestCase as TestCaseUsingDB, override_settings
+from django.test import TestCase as TestCaseUsingDB
+from django.test.utils import override_settings
 from django.test.client import RequestFactory
 from model_mommy import mommy
 from varlet.models import Page

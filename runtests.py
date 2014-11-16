@@ -29,6 +29,9 @@ def runtests():
 
     try:
         from django.test.runner import DiscoverRunner as Runner
+        # reminder to self: an ImportError in the tests may either turn up
+        # or may cause this thing to barf with this crap:
+        # AttributeError: 'module' object has no attribute 'tests'
         test_args = ['varlet.tests']
     except ImportError:
         from django.test.simple import DjangoTestSuiteRunner as Runner
