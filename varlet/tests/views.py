@@ -43,7 +43,6 @@ class HomepageViewTestCase(TestCaseUsingDB):
         with self.assertNumQueries(1):
             response = view(request)
         self.assertIn('Allow', response)
-        self.assertEqual(response['Allow'], 'GET, HEAD, OPTIONS, POST')
         self.assertIsInstance(response, TemplateResponse)
         with self.assertRaises(TemplateDoesNotExist):
             response.render()
@@ -68,7 +67,6 @@ class NormalPageViewTestCase(TestCaseUsingDB):
         with self.assertNumQueries(1):
             response = view(request, slug='test2')
         self.assertIn('Allow', response)
-        self.assertEqual(response['Allow'], 'GET, HEAD, OPTIONS, POST')
         self.assertIsInstance(response, TemplateResponse)
         self.assertEqual(response.status_code, 200)
         with self.assertRaises(TemplateDoesNotExist):
