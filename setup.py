@@ -36,7 +36,9 @@ setup(
     ],
     tests_require=[
         "Django>=1.4.11",
+        "model-mommy>=1.2.2",
     ],
+    test_suite='runtests.runtests',
     zip_safe=False,
     keywords='django pages',
     license="BSD License",

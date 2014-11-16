@@ -25,7 +25,7 @@ class PageBase(EditRegionResponseMixin, ModelContext, DetailView):
         response = super(PageBase, self).render_to_response(*args, **kwargs)
         # always declare what's available
         if 'Allow' not in response:
-            response['Allow'] = ', '.join(self._allowed_methods())
+            response['Allow'] = ', '.join(sorted(self._allowed_methods()))
         return response
 
 
@@ -39,7 +39,7 @@ class PageDetail(PageBase):
     #: POST is available in case an :class:`~editregions.models.EditRegionChunk`
     #: needs to render and process a form, and raise a
     #: :exc:`~editregions.views.FormSuccess` exception to redirect.
-    http_method_names = ['get', 'head', 'post']
+    http_method_names = ['get', 'head', 'post', 'options']
 
     def get(self, request, *args, **kwargs):
         # taken from BaseDetailView
@@ -65,7 +65,7 @@ class PageDetail(PageBase):
 
 class Homepage(PageBase):
     model = Page
-    http_method_names = ['get', 'head', 'post']
+    http_method_names = ['get', 'head', 'post', 'options']
 
     def get_object(self, queryset=None):
         if queryset is None:
