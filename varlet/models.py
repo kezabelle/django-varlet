@@ -36,21 +36,17 @@ class MinimalPage(TimeStampedModel):
     objects = PageManager()
 
     def get_menu_title(self):
-        """ utility method for `django CMS`_ api compatibility
-
-        :return: the `menu_title`, or if not set, the `title`
-        :rtype: unicode string
-        """
+        """ familiar django-CMS api """
         if self.menu_title:
             return self.menu_title
         return self.title
 
     def get_page_title(self):
-        """
-        .. note::
-            this method is so named to provide API familiarity and compatibility
-            with django CMS, of which I am a big proponent.
-        """
+        """ familiar django-CMS api """
+        return self.title
+
+    def get_title(self):
+        """ familiar django-CMS api """
         return self.title
 
     def __str__(self):
