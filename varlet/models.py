@@ -97,12 +97,12 @@ class Page(MinimalPage):
 
     @staticmethod
     def get_template_choices():
-        """ For editregions forms ... """
+        """ For figuring out what templates are valid to store in the DB """
         layout_dir = 'varlet/pages/layouts/*.html'
         return template_choices(find_all_templates(pattern=layout_dir))
 
     def get_template_names(self):
-        """ For editregions """
+        """ For views to use as a source of renderable files """
         if not self.template:
             raise PageTemplateError("No template set ...")
         return (self.template,)
