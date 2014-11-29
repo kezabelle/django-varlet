@@ -19,6 +19,7 @@ class PageAdminConfig(object):
     Admin for our bundled :class:`varlet.models.Page`
     """
     form = PageAdminForm
+    editregions_template_field = 'template'
     search_fields = ['title', 'menu_title']
     prepopulated_fields = {
         "slug": [
