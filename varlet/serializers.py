@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework import pagination
 from .models import Page
 
 
@@ -9,12 +8,7 @@ class PageSerializer(serializers.HyperlinkedModelSerializer):
     possible_templates = serializers.SerializerMethodField('get_possible_templates')
 
     def get_possible_templates(self, obj):
-        for value, key in obj.get_template_choices():
-            yield {
-                'description': key,
-                'path': value,
-                'selected': obj.template == value
-            }
+        return obj.get_possible_templates()
 
     class Meta:
         model = Page

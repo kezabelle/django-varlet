@@ -107,6 +107,17 @@ class Page(MinimalPage):
             raise PageTemplateError("No template set ...")
         return (self.template,)
 
+    def _get_possible_templates(self):
+        for value, key in self.get_template_choices():
+            yield {
+                'description': key,
+                'path': value,
+                'selected': self.template == value
+            }
+
+    def get_possible_templates(self):
+        return tuple(self._get_possible_templates())
+
     def get_canonical_slug(self):
         """
         django-braces CanonicalSlugDetailMixin supporting method
