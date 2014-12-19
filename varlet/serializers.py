@@ -4,8 +4,14 @@ from .models import Page
 
 class PageSerializer(serializers.HyperlinkedModelSerializer):
     object_url = serializers.HyperlinkedIdentityField(view_name='pages:view')
-    template = serializers.ChoiceField(choices=Page.get_template_choices())
+    template = serializers.ChoiceField(choices=())
     possible_templates = serializers.SerializerMethodField('get_possible_templates')
+
+    def __init__(self, *args, **kwargs):
+
+        super(PageSerializer, self).__init__(*args, **kwargs)
+        if 'template' in self.fields:
+            self.fields['template'].choices = self.Meta.model.get_template_choices()  # noqa
 
     def get_possible_templates(self, obj):
         return obj.get_possible_templates()
@@ -13,4 +19,5 @@ class PageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Page
         fields = ['created', 'modified', 'url', 'object_url', 'is_homepage',
-                  'title', 'menu_title', 'slug', 'template', 'possible_templates']
+                  'title', 'menu_title', 'slug', 'template',
+                  'possible_templates']
