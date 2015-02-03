@@ -12,6 +12,13 @@ logger = logging.getLogger(__name__)
 
 
 class PageBase(EditRegionResponseMixin, ModelContext, DetailView):
+    def __repr__(self):
+        return '<%(cls)s model=%(model)r, http_method_names=%(http)r>' % {
+            'cls': self.__class__.__name__,
+            'model': getattr(self, 'model', None),
+            'http': self.http_method_names,
+        }
+
     def get_context_data(self, **kwargs):
         context = super(PageBase, self).get_context_data(**kwargs)
         missing_request = 'request' not in context
@@ -44,7 +51,7 @@ class PageDetail(PageBase):
     #: POST is available in case an :class:`~editregions.models.EditRegionChunk`
     #: needs to render and process a form, and raise a
     #: :exc:`~editregions.views.FormSuccess` exception to redirect.
-    http_method_names = ['get', 'head', 'post', 'options']
+    http_method_names = ('get', 'head', 'post', 'options')
 
     def get(self, request, *args, **kwargs):
         # taken from BaseDetailView
@@ -70,7 +77,7 @@ class PageDetail(PageBase):
 
 class Homepage(PageBase):
     model = Page
-    http_method_names = ['get', 'head', 'post', 'options']
+    http_method_names = ('get', 'head', 'post', 'options')
 
     def get_object(self, queryset=None):
         if queryset is None:
