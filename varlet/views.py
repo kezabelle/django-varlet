@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 from django.conf import settings
-from django.contrib import admin
 from django.http import Http404, HttpResponsePermanentRedirect
 from django.views.generic.detail import DetailView
 from .compat import ModelContext
@@ -21,6 +20,7 @@ class PageBase(EditRegionResponseMixin, ModelContext, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PageBase, self).get_context_data(**kwargs)
+        # TODO: move to checks framework.
         missing_request = 'request' not in context
         missing_processor = ('django.core.context_processors.request'
                              not in settings.TEMPLATE_CONTEXT_PROCESSORS)
