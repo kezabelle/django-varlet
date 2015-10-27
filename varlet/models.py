@@ -12,8 +12,7 @@ from django.db.models.fields import BooleanField, CharField, SlugField
 from django.utils.encoding import python_2_unicode_compatible
 from django.template import TemplateDoesNotExist
 from model_utils.models import TimeStampedModel
-from templatefinder.utils import find_all_templates
-from .utils import template_choices
+from templatefinder.utils import find_all_templates, template_choices
 from .listeners import maybe_update_homepage
 from .querying import PageManager
 
@@ -99,7 +98,8 @@ class Page(MinimalPage):
     def get_template_choices():
         """ For figuring out what templates are valid to store in the DB """
         layout_dir = 'varlet/pages/layouts/*.html'
-        return template_choices(find_all_templates(pattern=layout_dir))
+        found_templates = find_all_templates(pattern=layout_dir)
+        return template_choices(found_templates)
 
     def get_template_names(self):
         """ For views to use as a source of renderable files """

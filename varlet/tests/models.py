@@ -37,8 +37,8 @@ class ConcreteModelMethodsTestCase(TestCaseUsingDB):
 
     def test_template_choices(self):
         self.assertEqual(tuple(Page.get_template_choices()),
-                         (('varlet/pages/layouts/a.html', 'A'),
-                          ('varlet/pages/layouts/b.html', 'B')))
+                         (('varlet/pages/layouts/a.html', 'Template: a'),
+                          ('varlet/pages/layouts/b.html', 'Another template: b')))
 
     def test_get_template_names_no_template(self):
         obj = mommy.prepare(Page, template=None)

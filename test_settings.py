@@ -67,6 +67,11 @@ TEMPLATE_DIRS = (
     ),
 )
 
+TEMPLATEFINDER_DISPLAY_NAMES = {
+    "varlet/pages/layouts/a.html": "Template: a",
+    "varlet/pages/layouts/b.html": "Another template: b",
+}
+
 SILENCED_SYSTEM_CHECKS = [
     "1_7.W001",
     "varlet.W1",

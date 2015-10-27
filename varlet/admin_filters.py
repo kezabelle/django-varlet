@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.contrib.admin.options import IncorrectLookupParameters
 from django.utils.translation import ugettext_lazy as _
-from .utils import template_choices
+from templatefinder.utils import template_choices
 
 
 class UsedTemplateFilter(SimpleListFilter):
@@ -15,7 +15,7 @@ class UsedTemplateFilter(SimpleListFilter):
         templates = tuple(model_admin.model.objects.exclude(bad_entries)
                           .values_list('template', flat=True).distinct())
         templates_sorted = sorted(templates)
-        return template_choices(templates=templates_sorted, display_names=None)
+        return template_choices(templates=templates_sorted)
 
     def queryset(self, request, queryset):
         if self.parameter_name in self.used_parameters:
