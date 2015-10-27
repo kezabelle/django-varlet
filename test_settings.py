@@ -7,16 +7,24 @@ try:
 except AttributeError:  # < Python 2.7
     pass
 
+
+DEBUG = os.environ.get('DEBUG', 'on') == 'on'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'TESTTESTTESTTESTTESTTESTTESTTEST')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,testserver').split(',')
+BASE_DIR = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
 INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.contenttypes',
+    'django.contrib.staticfiles',
     'django.contrib.auth',
     'django.contrib.admin',
     'varlet',
@@ -24,6 +32,13 @@ INSTALLED_APPS = (
 
 SKIP_SOUTH_TESTS = True
 SOUTH_TESTS_MIGRATE = False
+
+STATIC_URL = '/__static__/'
+MEDIA_URL = '/__media__/'
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+SESSION_COOKIE_HTTPONLY = True
+
 
 ROOT_URLCONF = 'test_urls'
 
@@ -34,13 +49,21 @@ PASSWORD_HASHERS = (
 
 SITE_ID = 1
 
-TEMPLATE_CONTEXT_PROCESSORS = ()
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+)
 
-HERE_DIR = os.path.abspath(os.path.dirname(__file__))
+MIDDLEWARE_CLASSES = (
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+)
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'test_collectstatic')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'test_media')
 
 TEMPLATE_DIRS = (
     os.path.realpath(
-        os.path.join(HERE_DIR, 'varlet', 'tests', 'test_templates')
+        os.path.join(BASE_DIR, 'varlet', 'tests', 'test_templates')
     ),
 )
 
