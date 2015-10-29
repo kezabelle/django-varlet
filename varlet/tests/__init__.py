@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .context_processors import *
-from .views import *
-from .signals import *
-from .models import *
+from .test_context_processors import *
+from .test_views import *
+from .test_signals import *
+from .test_models import *

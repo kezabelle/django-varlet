@@ -3,19 +3,40 @@
 import sys
 import os
 from setuptools import setup
+from setuptools.command.test import test as TestCommand
 
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
+
+class PyTest(TestCommand):
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.pytest_args = []
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        # import here, cause outside the eggs aren't loaded
+        import pytest
+        errno = pytest.main(self.pytest_args)
+        sys.exit(errno)
+
+
 def make_readme(root_path):
-    FILES = ('README.rst', 'LICENSE', 'CHANGELOG', 'CONTRIBUTORS')
-    for filename in FILES:
-        filepath = os.path.realpath(os.path.join(HERE, filename))
+    consider_files = ('README.rst', 'LICENSE', 'CHANGELOG', 'CONTRIBUTORS')
+    for filename in consider_files:
+        filepath = os.path.realpath(os.path.join(root_path, filename))
         if os.path.isfile(filepath):
             with open(filepath, mode='r') as f:
                 yield f.read()
 
+
 LONG_DESCRIPTION = "\r\n\r\n----\r\n\r\n".join(make_readme(HERE))
+
 
 setup(
     name='django-varlet',
@@ -35,10 +56,14 @@ setup(
         'django-classy-tags>=0.5.1',
     ],
     tests_require=[
-        "Django>=1.4.11",
+        'Django>=1.4.11',
         "model-mommy>=1.2.2",
+        'pytest>=2.6.4',
+        'pytest-cov>=1.8.1',
+        'pytest-django>=2.8.0',
+        'pytest-remove-stale-bytecode>=1.0',
     ],
-    test_suite='runtests.runtests',
+    cmdclass={'test': PyTest},
     zip_safe=False,
     keywords='django pages',
     license="BSD License",

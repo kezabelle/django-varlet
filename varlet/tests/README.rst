@@ -1,7 +1,7 @@
 varlet tests
 ============
 
-To run these tests, run the following from the folder containiner ``setup.py``::
+To run these tests, run the following from the folder containing ``setup.py``::
 
     python -B -tt -W once setup.py test
 
