@@ -58,6 +58,7 @@ setup(
     tests_require=[
         'Django>=1.4.11',
         "model-mommy>=1.2.2",
+        "djangorestframework>=3.0",
         'pytest>=2.6.4',
         'pytest-cov>=1.8.1',
         'pytest-django>=2.8.0',

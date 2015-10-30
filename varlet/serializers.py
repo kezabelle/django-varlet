@@ -3,9 +3,9 @@ from .models import Page
 
 
 class PageSerializer(serializers.HyperlinkedModelSerializer):
-    object_url = serializers.HyperlinkedIdentityField(view_name='pages:view')
+    object_url = serializers.HyperlinkedIdentityField(view_name='pages:view', lookup_field='slug')
     template = serializers.ChoiceField(choices=())
-    possible_templates = serializers.SerializerMethodField('get_possible_templates')
+    possible_templates = serializers.SerializerMethodField()
 
     def __init__(self, *args, **kwargs):
 
@@ -21,3 +21,6 @@ class PageSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['created', 'modified', 'url', 'object_url', 'is_homepage',
                   'title', 'menu_title', 'slug', 'template',
                   'possible_templates']
+        extra_kwargs = {
+            'url': {'lookup_field': 'slug'},
+        }

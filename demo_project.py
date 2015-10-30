@@ -7,6 +7,7 @@ sys.dont_write_bytecode = True
 MISSING_DEPENDENCY = False
 try:
     from django.conf import settings
+    import rest_framework
 except ImportError:
     sys.stdout.write("You'll need to "
                      "`pip install demo_project.requirements.txt` to run "

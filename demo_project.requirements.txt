@@ -8,3 +8,4 @@ django-classy-tags==0.6.2
 django-model-utils==2.3.1
 django-template-finder==0.6.2
 django==1.8.5
+djangorestframework==3.3.0

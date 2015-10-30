@@ -21,14 +21,15 @@ DATABASES = {
     }
 }
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.staticfiles',
     'django.contrib.auth',
     'django.contrib.admin',
     'varlet',
-)
+    'rest_framework',
+]
 
 SKIP_SOUTH_TESTS = True
 SOUTH_TESTS_MIGRATE = False
@@ -56,6 +57,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'test_collectstatic')
@@ -70,6 +72,16 @@ TEMPLATE_DIRS = (
 TEMPLATEFINDER_DISPLAY_NAMES = {
     "varlet/pages/layouts/a.html": "Template: a",
     "varlet/pages/layouts/b.html": "Another template: b",
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'COMPACT_JSON': False,
+    'PAGE_SIZE': 10,
 }
 
 SILENCED_SYSTEM_CHECKS = [
