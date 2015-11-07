@@ -12,7 +12,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.template import TemplateDoesNotExist
 from model_utils.models import TimeStampedModel
 from templatefinder.utils import find_all_templates, template_choices
-from .querying import PageManager
+from .querying import PageQuerySet, MinimalPageQuerySet
 
 
 logger = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ class MinimalPage(TimeStampedModel):
                            help_text=_('may be displayed in menus, instead of '
                                        'the standard title'))
     is_homepage = BooleanField(default=False, db_index=True)
-    objects = PageManager()
+    objects = MinimalPageQuerySet.as_manager()
 
     def get_menu_title(self):
         """ familiar django-CMS api """
@@ -86,6 +86,7 @@ class Page(MinimalPage):
                          verbose_name=_('template'),
                          help_text=_('templates may affect the display '
                                      'of this page on the website.'))
+    objects = PageQuerySet.as_manager()
 
     def get_absolute_url(self):
         if self.is_homepage:
@@ -121,6 +122,9 @@ class Page(MinimalPage):
         django-braces CanonicalSlugDetailMixin supporting method
         """
         return self.slug
+
+    def natural_key(self):
+        return (self.slug,)
 
     def _get_logentries(self, *args, **kwargs):
         """
