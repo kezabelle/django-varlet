@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-from django.db.models.signals import pre_save
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
@@ -13,7 +12,6 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.template import TemplateDoesNotExist
 from model_utils.models import TimeStampedModel
 from templatefinder.utils import find_all_templates, template_choices
-from .listeners import maybe_update_homepage
 from .querying import PageManager
 
 
@@ -185,6 +183,3 @@ class Page(MinimalPage):
 
     class Meta:
         db_table = 'varlet_page'
-
-pre_save.connect(maybe_update_homepage, sender=Page,
-                 dispatch_uid='slugpage_maybe_update_homepage')
