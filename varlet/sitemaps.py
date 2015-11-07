@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
 import logging
 from django.contrib.sitemaps import Sitemap
 from django.utils import timezone
@@ -10,10 +9,6 @@ logger = logging.getLogger(__name__)
 
 
 class MinimalPageSitemap(Sitemap):
-
-    @property
-    def model(self):
-        raise NotImplementedError("Subclasses should assign a concrete model")
 
     def items(self):
         raise NotImplementedError("Subclasses should implement this")
@@ -44,7 +39,10 @@ class MinimalPageSitemap(Sitemap):
 
 
 class PageSitemap(MinimalPageSitemap):
-    model = Page
+    # __slots__ = ('model',)
+
+    def __init__(self, model=None):
+        self.model = model or Page
 
     def items(self):
         return self.model.objects.all()
