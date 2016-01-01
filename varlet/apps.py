@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class PageAppConfig(AppConfig):
     name = "varlet"
-    label = "pages"
+    label = "varlet"
     verbose_name = _("Pages")
 
     def ready(self):
