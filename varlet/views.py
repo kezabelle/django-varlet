@@ -52,7 +52,7 @@ class PageDetail(PageBase):
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
-        return self.get(request=request, *args, **kwargs)
+        return self.get(request, *args, **kwargs)
 
     def get_template_names(self):
         return self.object.get_template_names()
@@ -99,7 +99,7 @@ class Homepage(PageBase):
             raise Http404(msg)
 
     def post(self, request, *args, **kwargs):
-        return self.get(request=request, *args, **kwargs)
+        return self.get(request, *args, **kwargs)
 
     def get_template_names(self):
         try:
