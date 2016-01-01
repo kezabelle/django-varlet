@@ -18,16 +18,6 @@ class PageBase(EditRegionResponseMixin, ModelContext, DetailView):
             'http': self.http_method_names,
         }
 
-    def get_context_data(self, **kwargs):
-        context = super(PageBase, self).get_context_data(**kwargs)
-        # TODO: move to checks framework.
-        missing_request = 'request' not in context
-        missing_processor = ('django.core.context_processors.request'
-                             not in settings.TEMPLATE_CONTEXT_PROCESSORS)
-        if missing_request and missing_processor:
-            context['request'] = self.request
-        return context
-
     def render_to_response(self, *args, **kwargs):
         response = super(PageBase, self).render_to_response(*args, **kwargs)
         # always declare what's available
