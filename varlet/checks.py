@@ -26,7 +26,7 @@ def check_for_request_context_processor(app_configs, **kwargs):
     errors = []
     missing = True
     hint = 'No context processor config found'
-    if hasattr(settings, 'TEMPLATES'):
+    if hasattr(settings, 'TEMPLATES') and len(settings.TEMPLATES) > 0:
         first = settings.TEMPLATES[0]
         found = (first['BACKEND'] == 'django.template.backends.django.DjangoTemplates' and
                  'OPTIONS' in first and
