@@ -79,8 +79,7 @@ class Homepage(PageBase):
             return super(Homepage, self).get(request, *args, **kwargs)
         except self.model.DoesNotExist as e:
             if settings.DEBUG:
-                urls = (x.get_absolute_url()
-                        for x in self.model.objects.only('slug').all())
+                urls = tuple(self.model.objects.all())
                 ctx = {
                     'verbose_name': self.model._meta.verbose_name,
                     'verbose_name_plural': self.model._meta.verbose_name_plural,
@@ -88,6 +87,7 @@ class Homepage(PageBase):
                     'responds_to': (x.upper()
                                     for x in sorted(self.http_method_names)),
                     'settings': settings.SETTINGS_MODULE,
+                    'model_opts': self.model._meta,
                 }
                 response = self.render_to_response(context=ctx)
                 response.status_code = 404
