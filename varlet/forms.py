@@ -25,4 +25,4 @@ class PageAdminForm(ModelForm):
 
     class Meta:
         model = Page
-        fields = ('title', 'menu_title', 'is_homepage', 'slug', 'template')
+        fields = ('title', 'is_homepage', 'slug', 'template')

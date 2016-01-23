@@ -20,7 +20,7 @@ class PageAdminConfig(object):
     """
     form = PageAdminForm
     editregions_template_field = 'template'
-    search_fields = ['title', 'menu_title']
+    search_fields = ['title']
     prepopulated_fields = {
         "slug": [
             "title",
@@ -38,7 +38,7 @@ class PageAdminConfig(object):
     ]
     fieldsets = [
         [None, {
-            'fields': (('title', 'menu_title'), 'slug', 'is_homepage'),
+            'fields': ('title', 'slug', 'is_homepage'),
         }],
         [None, {
             'fields': ('template',),

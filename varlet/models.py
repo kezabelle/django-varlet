@@ -25,25 +25,16 @@ class PageTemplateError(TemplateDoesNotExist):
 @python_2_unicode_compatible
 class MinimalPage(TimeStampedModel):
     title = CharField(max_length=255, verbose_name=_('title'))
-    menu_title = CharField(max_length=255, blank=True,
-                           verbose_name=_('menu title'),
-                           help_text=_('may be displayed in menus, instead of '
-                                       'the standard title'))
     is_homepage = BooleanField(default=False, db_index=True)
     objects = MinimalPageQuerySet.as_manager()
 
     def get_menu_title(self):
-        """ familiar django-CMS api """
-        if self.menu_title:
-            return self.menu_title
         return self.title
 
     def get_page_title(self):
-        """ familiar django-CMS api """
         return self.title
 
     def get_title(self):
-        """ familiar django-CMS api """
         return self.title
 
     def __str__(self):
