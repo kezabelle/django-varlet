@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from haystack.constants import Indexable
-from haystack.fields import CharField
+from haystack.fields import CharField, BooleanField, NgramField
 from haystack.indexes import SearchIndex
 from .models import Page
 
@@ -8,11 +8,14 @@ from .models import Page
 class MinimalPageIndex(SearchIndex):
 
     text = CharField(document=True, use_template=True)
-    title = CharField(model_attr='title')
+    title = NgramField(model_attr='title')
+    is_homepage = BooleanField(model_attr='is_homepage')
+    get_absolute_url = CharField(model_attr='get_absolute_url')
 
 
 class PageIndex(MinimalPageIndex, Indexable):
-    get_absolute_url = CharField(model_attr='get_absolute_url')
+    slug = CharField(model_attr='slug')
+    template = CharField(model_attr='template', indexed=False)
     created_by = CharField()
     edited_by = CharField()
 

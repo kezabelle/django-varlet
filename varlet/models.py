@@ -61,6 +61,10 @@ class MinimalPage(TimeStampedModel):
                "the Django `TEMPLATE_LOADERS`")
         raise NotImplementedError(msg)
 
+    def get_absolute_url(self):
+        msg = "Concrete (non-abstract) classes should implement this"
+        raise NotImplementedError(msg)
+
     class Meta:
         abstract = True
 
