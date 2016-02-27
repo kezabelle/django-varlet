@@ -21,15 +21,15 @@ class PageIndex(MinimalPageIndex, Indexable):
 
     def prepare_created_by(self, obj):
         author = obj.author()
-        if author.is_anonymous:
+        if author.is_anonymous():
             return ''
-        return author.get_full_name()
+        return author.get_full_name().strip() or getattr(author, author.USERNAME_FIELD)
 
     def prepare_edited_by(self, obj):
         editor = obj.editor()
-        if editor.is_anonymous:
+        if editor.is_anonymous():
             return ''
-        return editor.get_full_name()
+        return editor.get_full_name().strip() or getattr(editor, editor.USERNAME_FIELD)
 
     def get_model(self):
         return Page
