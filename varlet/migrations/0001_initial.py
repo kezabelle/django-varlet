@@ -18,6 +18,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('url', models.CharField(max_length=2048, unique=True, verbose_name='url')),
+                ('created', models.DateTimeField(auto_now_add=True)),
+                ('modified', models.DateTimeField(auto_now=True)),
                 ('template', models.CharField(help_text='templates may affect the display of this page on the website.', max_length=255, verbose_name='template')),
             ],
             options={

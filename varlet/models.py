@@ -8,6 +8,8 @@ from django.utils.translation import ugettext_lazy as _
 
 class BasePage(models.Model):
     url = models.CharField(max_length=2048, unique=True, verbose_name=_('url'))
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def clean(self):
         super(BasePage, self).clean()
