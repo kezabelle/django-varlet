@@ -1,6 +1,0 @@
-*.sqlite3
-bash_history.txt
-.eggs
-htmlcov
-.coverage
-.cache/v/cache
