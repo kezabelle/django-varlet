@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class BasePage(models.Model):
-    url = models.CharField(max_length=2048, unique=True, verbose_name=_('url'))
+    url = models.CharField(max_length=2048, unique=True, verbose_name=_('url'), blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
@@ -20,6 +20,9 @@ class BasePage(models.Model):
                "return a list of template paths that may be discovered by "
                "the Django template loaders")
         raise NotImplementedError(msg)
+
+    def is_root(self):
+        return self.url == ''
 
     class Meta:
         abstract = True
