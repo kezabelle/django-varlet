@@ -2,10 +2,13 @@
 from __future__ import absolute_import, unicode_literals
 
 import swapper
+from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils.six import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 
+@python_2_unicode_compatible
 class BasePage(models.Model):
     url = models.CharField(max_length=2048, unique=True, verbose_name=_('url'), blank=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -21,8 +24,14 @@ class BasePage(models.Model):
                "the Django template loaders")
         raise NotImplementedError(msg)
 
+    def get_absolute_url(self):
+        return reverse('page_detail', kwargs={'remaining_path': self.url})
+
     def is_root(self):
         return self.url == ''
+
+    def __str__(self):
+        return self.get_absolute_url()
 
     class Meta:
         abstract = True

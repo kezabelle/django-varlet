@@ -5,6 +5,9 @@ from django.contrib import admin
 
 
 class PageAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('__str__', 'templates', 'created', 'modified',)
+
+    def templates(self, obj):
+        return ", ".join(obj.get_template_names())
 
 admin.site.register(swapper.load_model('varlet', 'Page'), admin_class=PageAdmin)
