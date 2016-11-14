@@ -82,4 +82,4 @@ def test_admin_does_allow_unused_urls(admin_client):
     url = reverse('admin:varlet_page_add')
     response = admin_client.post(url, data=data, follow=False)
     assert response.status_code == 302
-    assert response.url == reverse('admin:varlet_page_changelist')
+    assert urlsplit(response.url).path == reverse('admin:varlet_page_changelist')

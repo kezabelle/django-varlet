@@ -43,10 +43,15 @@ class BasePage(models.Model):
                     if resolved.url_name != 'page_detail':
                         msg = ("Pages cannot be created for URLs which are already "
                                "handled by another application")
-                        if resolved.app_names:
-                            first_name = resolved.app_names[0]
+                        if hasattr(resolved, 'app_names'):
+                            app_name = resolved.app_names[0]
+                        elif hasattr(resolved, 'app_name'):
+                            app_name = resolved.app_name
+                        else:
+                            app_name = None
+                        if app_name is not None:
                             try:
-                                appconf = apps.get_app_config(first_name)
+                                appconf = apps.get_app_config(app_name)
                             except LookupError:
                                 pass
                             else:
