@@ -29,26 +29,28 @@ class BasePage(models.Model):
             # Don't allow URLs like /admin/ IF the app is mounted at /
             # as the "last resort" in the project's main urlconf.
             this_url = self.get_absolute_url()
-            try:
-                resolved = resolve(this_url)
-            except Resolver404:
-                pass
-            else:
-                if resolved.url_name != 'page_detail':
-                    msg = ("Pages cannot be created for URLs which are already "
-                           "handled by another application")
-                    if resolved.app_names:
-                        first_name = resolved.app_names[0]
-                        try:
-                            appconf = apps.get_app_config(first_name)
-                        except LookupError:
-                            pass
-                        else:
-                            app = appconf.verbose_name
-                            msg = "{0} called '{1}'".format(msg, app)
-                    msg2 = "{0}, the URL already points to {1}".format(msg, resolved.view_name)
-                    logger.info(msg2)
-                    raise ValidationError({'url': msg})
+            this_url_stripped = this_url.rstrip('/')
+            for url in (this_url, this_url_stripped):
+                try:
+                    resolved = resolve(url)
+                except Resolver404:
+                    continue
+                else:
+                    if resolved.url_name != 'page_detail':
+                        msg = ("Pages cannot be created for URLs which are already "
+                               "handled by another application")
+                        if resolved.app_names:
+                            first_name = resolved.app_names[0]
+                            try:
+                                appconf = apps.get_app_config(first_name)
+                            except LookupError:
+                                pass
+                            else:
+                                app = appconf.verbose_name
+                                msg = "{0} called '{1}'".format(msg, app)
+                        msg2 = "{0}, the URL already points to {1}".format(msg, resolved.view_name)
+                        logger.info(msg2)
+                        raise ValidationError({'url': msg})
         return None
 
     def get_template_names(self):

@@ -40,10 +40,12 @@ def make_readme(root_path):
 LICENSE = "BSD License"
 URL = ""
 LONG_DESCRIPTION = "\r\n\r\n----\r\n\r\n".join(make_readme(HERE))
-SHORT_DESCRIPTION = ""
+SHORT_DESCRIPTION = "URLs which render specified templates, controlled via models and the admin"
 KEYWORDS = (
     "django",
     "varlet",
+    "url",
+    "template",
 )
 
 setup(
@@ -62,10 +64,11 @@ setup(
     install_requires=[
         "Django>=1.8",
         "swapper>=1.0.0",
+        "django-template-finder>=0.6.2",
     ],
     tests_require=[
         "pytest>=2.6",
-        "pytest-django>=2.8.0",
+        "pytest-django>=2.8.0,<3.0.0",
         "pytest-cov>=1.8",
         "pytest-remove-stale-bytecode>=1.0",
         "pytest-catchlog>=1.2",
