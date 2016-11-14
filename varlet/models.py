@@ -4,7 +4,11 @@ import logging
 from django import forms
 from django.apps import apps
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse, resolve, Resolver404
+
+try:
+    from django.urls import reverse, resolve, Resolver404
+except ImportError:
+    from django.core.urlresolvers import reverse, resolve, Resolver404
 from django.db import models
 from django.utils.six import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _

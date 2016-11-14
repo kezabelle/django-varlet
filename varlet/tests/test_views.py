@@ -4,7 +4,10 @@ import xml.etree.ElementTree as ET
 import pytest
 import swapper
 from django.template import TemplateDoesNotExist
-from django.urls import reverse
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 from django.utils.six.moves.urllib.parse import urlsplit
 
 
