@@ -38,7 +38,7 @@ def make_readme(root_path):
                 yield f.read()
 
 LICENSE = "BSD License"
-URL = ""
+URL = "https://github.com/kezabelle/django-varlet"
 LONG_DESCRIPTION = "\r\n\r\n----\r\n\r\n".join(make_readme(HERE))
 SHORT_DESCRIPTION = "URLs which render specified templates, controlled via models and the admin"
 KEYWORDS = (
