@@ -13,4 +13,9 @@ class PageAdmin(admin.ModelAdmin):
         templates = (x[1] for x in choices)
         return ", ".join(templates)
 
+    def get_queryset(self, request):
+        qs = super(PageAdmin, self).get_queryset(request=request)
+        qs = qs.order_by('url')
+        return qs
+
 admin.site.register(swapper.load_model('varlet', 'Page'), admin_class=PageAdmin)
