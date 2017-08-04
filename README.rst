@@ -1,5 +1,5 @@
 django-varlet
-================================
+=============
 
 :author: Keryn Knight
 :version: 0.1.0
@@ -21,7 +21,7 @@ An implementation of models, views etc. that can act as **pages**, though they
 have no content fields to speak of. Bring Your Own Content.
 
 Pages consist only of a URL and a way to render a template at that URL. The
-default model implementation uses `django-template-finder`_ to provide template
+default model implementation uses `django-templateselector`_ to provide template
 selection from HTML files within ``<templatedir>/varlet/pages/layouts``
 
 The application uses `swapper`_ to theoretically allow for using a different
@@ -36,5 +36,5 @@ The license
 It's the `FreeBSD`_. There's should be a ``LICENSE`` file in the root of the repository, and in any archives.
 
 .. _FreeBSD: http://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_.28.22Simplified_BSD_License.22_or_.22FreeBSD_License.22.29
-.. _django-template-finder: https://github.com/TyMaszWeb/django-template-finder
+.. _django-templateselector: https://github.com/kezabelle/django-template-selector
 .. _swapper: https://github.com/wq/django-swappable-models

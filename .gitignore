@@ -1,3 +1,4 @@
 htmlcov
 dist
 .tox
+db.sqlite3

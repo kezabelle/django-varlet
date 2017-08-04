@@ -1,10 +1,16 @@
-
+help:
+	@echo "clean-build - get rid of build artifacts & metadata"
+	@echo "clean-pyc - get rid of dross files"
+	@echo "test - execute tests; calls clean-pyc for you"
+	@echo "dist - build a distribution; calls test, clean-build and clean-pyc"
+	@echo "check - check the quality of the built distribution; calls dist for you"
+	@echo "release - register and upload to PyPI"
 
 clean-build:
 	rm -fr build/
+	rm -fr htmlcov/
 	rm -fr dist/
 	rm -fr .eggs/
-	rm -fr htmlcov
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
 
@@ -19,7 +25,6 @@ test: clean-pyc
 	python -B -R -tt -W ignore setup.py test
 
 dist: test clean-build clean-pyc
-	pip install wheel
 	python setup.py sdist bdist_wheel
 
 check: dist
@@ -27,3 +32,13 @@ check: dist
 	check-manifest
 	pyroma .
 	restview --long-description
+
+release:
+	@echo "INSTRUCTIONS:"
+	@echo "- pip install wheel twine"
+	@echo "- python setup.py sdist bdist_wheel"
+	@echo "- ls dist/"
+	@echo "- twine register dist/???"
+	@echo "- twine upload dist/*"
+
+

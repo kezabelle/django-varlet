@@ -62,9 +62,10 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
-        "Django>=1.8",
+        "Django>=1.11",
+        "djangorestframework>=3.6"
         "swapper>=1.0.0",
-        "django-template-finder>=0.6.2",
+        "django-templateselector>=0.1.0",
     ],
     tests_require=[
         "pytest>=2.6",

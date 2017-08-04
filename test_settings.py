@@ -14,6 +14,8 @@ DATABASES = {
     }
 }
 
+INTERNAL_IPS = ("127.0.0.1",)
+
 INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sessions',
@@ -22,7 +24,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.auth',
     'django.contrib.admin',
+    'rest_framework',
+    'debug_toolbar',
+    'templateselector',
     'varlet',
+    'varlet.tests',
 ]
 
 SKIP_SOUTH_TESTS = True
@@ -43,13 +49,7 @@ PASSWORD_HASHERS = (
 
 SITE_ID = 1
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-)
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -58,12 +58,14 @@ TEMPLATES = [
         ],
         'APP_DIRS': True,
         'OPTIONS': {
-            'context_processors': TEMPLATE_CONTEXT_PROCESSORS,
+            'context_processors': (
+                'django.contrib.auth.context_processors.auth',
+            ),
         },
     },
 ]
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -73,3 +75,17 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'test_collectstatic')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'test_media')
 
 USE_TZ = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.TemplateHTMLRenderer',
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    )
+}
