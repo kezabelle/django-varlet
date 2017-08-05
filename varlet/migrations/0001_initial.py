@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import varlet.models
+import templateselector.fields
 
 
 class Migration(migrations.Migration):
@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('url', models.CharField(blank=True, max_length=2048, unique=True, verbose_name='url')),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('modified', models.DateTimeField(auto_now=True)),
-                ('template', varlet.models.TemplateField(help_text='templates may affect the display of this page on the website.', max_length=255, path='varlet/pages/layouts/*.html', verbose_name='template')),
+                ('template', templateselector.fields.TemplateField(display_name=templateselector.fields.nice_display_name, help_text='templates may affect the display of this page on the website.', match='^varlet/pages/layouts/*.html$')),
             ],
             options={
                 'swappable': 'VARLET_PAGE_MODEL',

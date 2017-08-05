@@ -5,7 +5,7 @@
     <title>{{ content_type.name }} &mdash; {{ get_absolute_url }}</title>
 </head>
 <body>
-<p>Yay! found <b>{{ content_type.name }}</b> for <code>{{ get_absolute_url }}</code> using the template <b>{{ template_title }}</b></p>
+<p>Woohoo! <b>{{ content_type.name }}</b> loaded at <code>{{ get_absolute_url }}</code> using the template <b>{{ template_title }}</b></p>
 
 <p><a href="{% url "admin:"|add:content_type.app_label|add:"_"|add:content_type.model|add:"_change" pk %}">Edit this {{ content_type.name }}</a></p>
 </body>

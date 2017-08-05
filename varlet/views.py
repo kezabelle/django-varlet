@@ -2,43 +2,34 @@
 from __future__ import unicode_literals, absolute_import
 import swapper
 from django.http import Http404
-from django.utils.translation import ugettext as _
-from django.views.generic import DetailView
+from rest_framework import viewsets
+from varlet.serializers import PageSerializer
 
 
 class Page404(Http404): pass
 
 
-class PageDetail(DetailView):
-    slug_url_kwarg = 'remaining_path'
-    slug_field = 'url'
+class BasePageViewSet(viewsets.ModelViewSet):
+    page_size = 10
+    lookup_field = "url"
+    lookup_url_kwarg = "url"
+    lookup_value_regex = ".*?"
 
-    @property
-    def model(self):
-        return swapper.load_model("varlet", "Page")
+    def is_using_template_renderer(self, request):
+        renderer = request.accepted_renderer
+        return renderer.format == 'html' and hasattr(renderer, 'get_template_names')
+
+    def list(self, request, *args, **kwargs):
+        if self.is_using_template_renderer(request=request):
+            view = self.__class__.as_view({'get': 'retrieve'})
+            response = view(request, **{self.lookup_url_kwarg: request.path.strip('/')})
+            return response
+        return super(BasePageViewSet, self).list(request, *args, **kwargs)
+
+
+class PageViewSet(BasePageViewSet):
+    queryset = swapper.load_model('varlet', 'Page').objects.all()
+    serializer_class = PageSerializer
 
     def get_template_names(self):
-        return self.object.get_template_names()
-
-    def get_object(self, queryset=None):
-        if queryset is None:
-            queryset = self.get_queryset()
-
-        slug = self.kwargs.get(self.slug_url_kwarg, None)
-        if slug is not None:
-            slug = slug.strip('/')
-            slug_field = self.get_slug_field()
-            query = {slug_field: slug}
-            queryset = queryset.filter(**query)
-        else:
-            raise AttributeError("Missing 'slug_url_kwarg' from self.kwargs")
-
-        try:
-            obj = queryset.get()
-        except queryset.model.DoesNotExist:
-            raise Page404(_(u"No %(verbose_name)s found matching query: %(query)r") %
-                          {'verbose_name': queryset.model._meta.verbose_name, 'query': query})
-        return obj
-
-
-page_detail = PageDetail.as_view()
+        return [self.response.data['template']]
