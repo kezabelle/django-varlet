@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 import logging
+import re
+
+import unicodedata
+
 from django.apps import apps
 from django.core.exceptions import ValidationError
 from templateselector.fields import TemplateField
 try:
-    from django.urls import reverse, resolve, Resolver404
+    from django.urls import reverse, resolve, Resolver404, NoReverseMatch
 except ImportError:
     from django.core.urlresolvers import reverse, resolve, Resolver404
 from django.db import models
@@ -22,6 +26,10 @@ import swapper
 logger = logging.getLogger(__name__)
 
 
+replace_spaces_re = re.compile('\s+')
+replace_multi_spaces_re = re.compile('-{2,}')
+
+
 @python_2_unicode_compatible
 class BasePage(models.Model):
     url = models.CharField(max_length=2048, unique=True, verbose_name=_('URL'), blank=True)
@@ -30,9 +38,16 @@ class BasePage(models.Model):
 
     def clean(self):
         super(BasePage, self).clean()
-        self.url = urlsplit(self.url.strip().strip('/')).path.strip('/')
-        if escape(self.url) != self.url:
-            raise ValidationError({"url": "Unsafe characters in URL"})
+        tidying_url = self.url.strip().strip('/')
+        tidying_url = unicodedata.normalize('NFKC', tidying_url)
+        tidying_url = replace_spaces_re.sub('-', tidying_url)
+        tidying_url = replace_multi_spaces_re.sub('-', tidying_url)
+        parsed_url = urlsplit(tidying_url).path.strip('/')
+        if parsed_url != tidying_url:
+            raise ValidationError({"url": "Unsafe characters detected"})
+        if escape(parsed_url) != parsed_url:
+            raise ValidationError({"url": "Unsafe characters detected"})
+        self.url = parsed_url
         application_root = reverse('page-detail', kwargs={'url': ''})
         if application_root.strip('/') in ('', "%2F"):
             # Don't allow URLs like /admin/ IF the app is mounted at /
@@ -45,10 +60,10 @@ class BasePage(models.Model):
                 except Resolver404:
                     continue
                 else:
-                    if resolved.url_name != 'page-detail':
+                    if resolved.url_name not in ('page-detail', 'page-list'):
                         msg = ("Pages cannot be created for URLs which are already "
                                "handled by another application")
-                        if hasattr(resolved, 'app_names'):
+                        if hasattr(resolved, 'app_names') and resolved.app_names:
                             app_name = resolved.app_names[0]
                         elif hasattr(resolved, 'app_name'):
                             app_name = resolved.app_name
@@ -80,7 +95,10 @@ class BasePage(models.Model):
         return url.replace("//", "/")
 
     def __str__(self):
-        return self.get_absolute_url()
+        try:
+            return self.get_absolute_url()
+        except NoReverseMatch:
+            return "Invalid URL"
 
     class Meta:
         abstract = True

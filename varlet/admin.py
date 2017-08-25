@@ -6,11 +6,11 @@ from django.db.models import Func, F, Value
 from django.db.models.functions import Length
 
 
-class PageAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'get_template_display', 'created', 'modified',)
+class BasePageAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'created', 'modified',)
 
     def get_queryset(self, request):
-        qs = super(PageAdmin, self).get_queryset(request=request)
+        qs = super(BasePageAdmin, self).get_queryset(request=request)
         x = Func(
             F('url'),
             Value('/'), Value(''),
@@ -20,5 +20,9 @@ class PageAdmin(admin.ModelAdmin):
         counter = url_len - Length(x)
         qs = qs.annotate(slash_count=counter).order_by('url', 'slash_count')
         return qs
+
+
+class PageAdmin(BasePageAdmin):
+    list_display = ('__str__', "get_template_display", 'created', 'modified')
 
 admin.site.register(swapper.load_model('varlet', 'Page'), admin_class=PageAdmin)

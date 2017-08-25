@@ -13,7 +13,7 @@ class BasePageViewSet(viewsets.ModelViewSet):
     page_size = 10
     lookup_field = "url"
     lookup_url_kwarg = "url"
-    lookup_value_regex = ".*?"
+    lookup_value_regex = "[^&<>\"\']*?"
 
     def is_using_template_renderer(self, request):
         renderer = request.accepted_renderer
