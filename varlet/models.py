@@ -10,14 +10,14 @@ from django.core.exceptions import ValidationError
 from templateselector.fields import TemplateField
 try:
     from django.urls import reverse, resolve, Resolver404, NoReverseMatch
-except ImportError:
+except ImportError:  # pragma: no cover
     from django.core.urlresolvers import reverse, resolve, Resolver404
 from django.db import models
 from django.utils.html import escape
 from django.utils.six import python_2_unicode_compatible
 try:
     from django.utils.six.moves.urllib.parse import urlsplit
-except ImportError:
+except ImportError:  # pragma: no cover
     from urllib.parse import urlsplit
 from django.utils.translation import ugettext_lazy as _
 import swapper
@@ -114,3 +114,4 @@ class Page(BasePage):
 
     class Meta:
         swappable = swapper.swappable_setting('varlet', 'Page')
+        ordering = ('-modified',)

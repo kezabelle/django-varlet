@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.admin',
     'rest_framework',
-    'debug_toolbar',
     'templateselector',
     'varlet',
     'varlet.tests',
