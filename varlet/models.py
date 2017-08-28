@@ -7,6 +7,7 @@ import unicodedata
 
 from django.apps import apps
 from django.core.exceptions import ValidationError
+from django.db.models import QuerySet
 from templateselector.fields import TemplateField
 try:
     from django.urls import reverse, resolve, Resolver404, NoReverseMatch
@@ -30,11 +31,18 @@ replace_spaces_re = re.compile('\s+')
 replace_multi_spaces_re = re.compile('-{2,}')
 
 
+class BasePageQuerySet(QuerySet):
+    def get_by_natural_key(self, url):
+        return self.get(url=url)
+
+
 @python_2_unicode_compatible
 class BasePage(models.Model):
     url = models.CharField(max_length=2048, unique=True, verbose_name=_('URL'), blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+
+    objects = BasePageQuerySet.as_manager()
 
     def clean(self):
         super(BasePage, self).clean()
@@ -99,6 +107,9 @@ class BasePage(models.Model):
             return self.get_absolute_url()
         except NoReverseMatch:
             return "Invalid URL"
+
+    def natural_key(self):
+        return (self.url,)
 
     class Meta:
         abstract = True
