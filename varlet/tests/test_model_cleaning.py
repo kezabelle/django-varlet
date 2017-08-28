@@ -11,7 +11,7 @@ def test_url_including_non_path_chars_raises_error():
     p = Page(url='/this/will/#break/yo/', template='admin/filter.html')
     with pytest.raises(ValidationError) as exc:
         p.full_clean()
-    assert "{'url': ['Unsafe characters detected']}" in force_text(exc.value)
+    assert "Unsafe characters detected" in force_text(exc.value)
 
 
 def test_url_including_escape_chars_raises_error():
@@ -19,4 +19,4 @@ def test_url_including_escape_chars_raises_error():
     p = Page(url='/this/will/&lol/', template='admin/filter.html')
     with pytest.raises(ValidationError) as exc:
         p.full_clean()
-    assert "{'url': ['Unsafe characters detected']}" in force_text(exc.value)
+    assert "Unsafe characters detected" in force_text(exc.value)
