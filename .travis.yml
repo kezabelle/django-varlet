@@ -20,3 +20,21 @@ env:
   
 script:
   - tox -e $TOX_ENV
+
+deploy:
+  provider: pypi
+  user: "kezabelle"
+  password:
+    secure: CEo2hMEJfF+Dd07Qq5QC5JzOF9qdegvi6OLYdZ6E4bXavYSU+Ps5DFiP/Qkzx6hoXeRSAlTn9QRTZt/6S74H6uZtY0yD37zMOpmTG0WehIIX0pqagHvPU+YwJp1Pd58mz4Fn73yR7+kHCqBowEEnXfCd2ZKl29WhX/OkLf7aqnA=
+  on:
+    tags: true
+    condition: $TOX_ENV = py35-dj111
+  distributions: "bdist_wheel"
+before_deploy:
+  - 'rm -fr build htmlcov dist .eggs .tox'
+  - 'find . -name "*.egg-info" -exec rm -fr {} \+'
+  - 'find . -name "*.egg" -exec rm -rf {} \+'
+  - 'find . -name "*.pyc" -exec rm -f {} \+'
+  - 'find . -name "*.pyo" -exec rm -f {} \+'
+  - 'find . -name "*~" -exec rm -f {} \+'
+  - 'find . -name "__pycache__" -exec rm -fr {} \+'
