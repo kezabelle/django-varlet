@@ -5,3 +5,4 @@ include Makefile
 include .coveragerc
 include CHANGELOG
 global-include *.rst *.py *.html
+global-include varlet/templates *.txt
