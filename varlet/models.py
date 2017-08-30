@@ -36,9 +36,26 @@ class BasePageQuerySet(QuerySet):
         return self.get(url=url)
 
 
+class URLPathField(models.CharField):
+    description = _("String (up to %(max_length)s) with additional validation "
+                    "that the input looks like a URL Path")
+    def to_python(self, value):
+        value = super(URLPathField, self).to_python(value)
+        tidying_url = value.strip().strip('/')
+        tidying_url = unicodedata.normalize('NFKC', tidying_url)
+        tidying_url = replace_spaces_re.sub('-', tidying_url)
+        tidying_url = replace_multi_spaces_re.sub('-', tidying_url)
+        parsed_url = urlsplit(tidying_url).path.strip('/')
+        if parsed_url != tidying_url:
+            raise ValidationError("Unsafe characters detected")
+        if escape(parsed_url) != parsed_url:
+            raise ValidationError("Unsafe characters detected")
+        return parsed_url
+
+
 @python_2_unicode_compatible
 class BasePage(models.Model):
-    url = models.CharField(max_length=2048, unique=True, verbose_name=_('URL'), blank=True)
+    url = URLPathField(max_length=2048, unique=True, verbose_name=_('URL'), blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
@@ -46,21 +63,17 @@ class BasePage(models.Model):
 
     def clean(self):
         super(BasePage, self).clean()
-        tidying_url = self.url.strip().strip('/')
-        tidying_url = unicodedata.normalize('NFKC', tidying_url)
-        tidying_url = replace_spaces_re.sub('-', tidying_url)
-        tidying_url = replace_multi_spaces_re.sub('-', tidying_url)
-        parsed_url = urlsplit(tidying_url).path.strip('/')
-        if parsed_url != tidying_url:
-            raise ValidationError({"url": "Unsafe characters detected"})
-        if escape(parsed_url) != parsed_url:
-            raise ValidationError({"url": "Unsafe characters detected"})
-        self.url = parsed_url
+        try:
+            this_url = self.get_absolute_url()
+        except NoReverseMatch:
+            # If we hit this exception, it means the field (URLPathField) didn't
+            # validate, so contains invalid characters that the urlconf also
+            # doesn't permit.
+            return None
         application_root = reverse('page-detail', kwargs={'url': ''})
         if application_root.strip('/') in ('', "%2F"):
             # Don't allow URLs like /admin/ IF the app is mounted at /
             # as the "last resort" in the project's main urlconf.
-            this_url = self.get_absolute_url()
             this_url_stripped = this_url.rstrip('/')
             for url in (this_url, this_url_stripped):
                 try:
