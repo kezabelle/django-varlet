@@ -5,6 +5,7 @@ help:
 	@echo "dist - build a distribution; calls test, clean-build and clean-pyc"
 	@echo "check - check the quality of the built distribution; calls dist for you"
 	@echo "release - register and upload to PyPI"
+	@echo "riot - compile riot tags"
 
 clean-build:
 	rm -fr build/
@@ -41,4 +42,8 @@ release:
 	@echo "- twine register dist/???"
 	@echo "- twine upload dist/*"
 
-
+riot:
+	rm -f varlet/static/varlet/urlpath-autocomplete.css
+	rm -f varlet/static/varlet/urlpath-autocomplete.js
+	./node_modules/.bin/riot varlet/static/varlet/urlpath-autocomplete.tag --export="css"
+	./node_modules/.bin/riot varlet/static/varlet/urlpath-autocomplete.tag --exclude="css" --modular

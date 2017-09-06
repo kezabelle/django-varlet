@@ -1,5 +1,12 @@
 Change history for django-varlet
 -------------------------------------------------------------
+
+?next?
+^^^^^^
+* Added typeahead/autocomplete to the URL field for a page.
+
+
+
 0.2.0
 ^^^^^^
 * Initial release

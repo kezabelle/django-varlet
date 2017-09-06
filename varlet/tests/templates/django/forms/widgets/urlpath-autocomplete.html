@@ -1,0 +1,4 @@
+<span data-is="urlpath-autocomplete" id="riot-{{ widget.attrs.id }}">{% include 'django/forms/widgets/text.html' %}</span>
+<script type="text/javascript" defer>riot.mount('#riot-{{ widget.attrs.id }}', {
+    'url': '{{ AUTOCOMPLETE_URL }}'
+})</script>
