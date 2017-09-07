@@ -6,6 +6,7 @@ import os
 import operator
 import re
 from difflib import SequenceMatcher
+from itertools import chain
 
 from django.core.exceptions import ValidationError
 try:
@@ -71,22 +72,28 @@ class BasePageAdmin(admin.ModelAdmin):
         if not query4:
             return error_response
         query5 = (Q(url__icontains=x) for x in query4)
-        query6 = reduce(operator.or_, query5)
+        query6 = (Q(url__icontains=x) for x in set(query3))
+        query7 = reduce(operator.or_, chain(query5, query6))
 
         def sorty(x):
             input_length = len(query2)
-            result_length = len(x.url)
-            matcher = SequenceMatcher(None, query2, x.url)
+            result_length = len(x)
+            matcher = SequenceMatcher(None, query2, x)
             longest = matcher.find_longest_match(0, input_length, 0, result_length)
-            return result_length, matcher.real_quick_ratio(), longest
+            prefix = os.path.commonprefix([query2, x])
+            prefix_length = len(prefix) or -1
+            result =  matcher.ratio() + longest.size + prefix_length
+            return result
 
         data = tuple(self.model.objects
                      .distinct()
-                     .filter(query6)[0:200]
+                     .values_list('url', flat=True)
+                     .exclude(url=query2)
+                     .filter(query7)[0:50]
                      .iterator())
-        sorted_data = tuple({'name': obj.url, 'path': obj.get_absolute_url()}
+        sorted_data = tuple({'name': obj}
                             for obj in sorted(data, key=sorty, reverse=True))
-        return JsonResponse(data={'results': sorted_data[0:20], 'count': len(data)})
+        return JsonResponse(data={'results': sorted_data[0:12], 'count': len(data)})
 
 
 class PageAdmin(BasePageAdmin):
