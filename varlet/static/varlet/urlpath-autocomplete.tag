@@ -40,6 +40,12 @@
             background-color: #FFF;
             padding: 5px 6px;
             box-sizing: border-box;
+            background-image: url("../admin/img/tooltag-arrowright.svg");
+            -webkit-transition: background-color 100ms ease-in-out, color 100ms ease-in-out, text-shadow 100ms ease-in-out;
+            -moz-transition: background-color 100ms ease-in-out, color 100ms ease-in-out, text-shadow 100ms ease-in-out;
+            -ms-transition: background-color 100ms ease-in-out, color 100ms ease-in-out, text-shadow 100ms ease-in-out;
+            -o-transition: background-color 100ms ease-in-out, color 100ms ease-in-out, text-shadow 100ms ease-in-out;
+            transition: background-color 100ms ease-in-out, color 100ms ease-in-out, text-shadow 100ms ease-in-out;
         }
 
         :scope ol li.selecting {
@@ -47,7 +53,6 @@
             text-shadow: 2px 2px 2px #417690;
             cursor: pointer;
             color: #FFF;
-            background-image: url("../admin/img/tooltag-arrowright.svg");
             background-repeat: no-repeat;
             background-position: right 7px center;
         }
@@ -70,6 +75,11 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             border-radius: 4px;
+            -webkit-transition: padding-top 300ms ease-in-out,  padding-bottom 300ms ease-in-out;
+            -moz-transition: padding-top 300ms ease-in-out,  padding-bottom 300ms ease-in-out;
+            -ms-transition: padding-top 300ms ease-in-out,  padding-bottom 300ms ease-in-out;
+            -o-transition: padding-top 300ms ease-in-out,  padding-bottom 300ms ease-in-out;
+            transition: padding-top 300ms ease-in-out,  padding-bottom 300ms ease-in-out;
         }
         :scope span:hover {
             background-color: #417690;
