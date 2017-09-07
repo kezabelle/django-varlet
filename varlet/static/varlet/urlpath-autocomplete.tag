@@ -44,6 +44,7 @@
 
         :scope ol li.selecting {
             background-color: #79aec8;
+            text-shadow: 2px 2px 2px #417690;
             cursor: pointer;
             color: #FFF;
             background-image: url("../admin/img/tooltag-arrowright.svg");
