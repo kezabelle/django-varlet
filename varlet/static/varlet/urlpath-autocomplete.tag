@@ -40,7 +40,6 @@
             background-color: #FFF;
             padding: 5px 6px;
             box-sizing: border-box;
-            background-image: url("../admin/img/tooltag-arrowright.svg");
             -webkit-transition: background-color 100ms ease-in-out, color 100ms ease-in-out, text-shadow 100ms ease-in-out;
             -moz-transition: background-color 100ms ease-in-out, color 100ms ease-in-out, text-shadow 100ms ease-in-out;
             -ms-transition: background-color 100ms ease-in-out, color 100ms ease-in-out, text-shadow 100ms ease-in-out;
@@ -49,6 +48,7 @@
         }
 
         :scope ol li.selecting {
+            background-image: url("../admin/img/tooltag-arrowright.svg");
             background-color: #79aec8;
             text-shadow: 2px 2px 2px #417690;
             cursor: pointer;

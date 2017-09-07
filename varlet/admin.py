@@ -72,8 +72,7 @@ class BasePageAdmin(admin.ModelAdmin):
         if not query4:
             return error_response
         query5 = (Q(url__icontains=x) for x in query4)
-        query6 = (Q(url__icontains=x) for x in set(query3))
-        query7 = reduce(operator.or_, chain(query5, query6))
+        query7 = reduce(operator.or_, query5)
 
         def sorty(x):
             input_length = len(query2)
@@ -82,14 +81,16 @@ class BasePageAdmin(admin.ModelAdmin):
             longest = matcher.find_longest_match(0, input_length, 0, result_length)
             prefix = os.path.commonprefix([query2, x])
             prefix_length = len(prefix) or -1
-            result =  matcher.ratio() + longest.size + prefix_length
+            result =  matcher.ratio() + longest.size + prefix_length + result_length
             return result
 
         data = tuple(self.model.objects
                      .distinct()
                      .values_list('url', flat=True)
                      .exclude(url=query2)
-                     .filter(query7)[0:50]
+                     .filter(query7)
+                     .annotate(url_length=Length('url'))
+                     .filter(url_length__gt=len(query2))[0:50]
                      .iterator())
         sorted_data = tuple({'name': obj}
                             for obj in sorted(data, key=sorty, reverse=True))

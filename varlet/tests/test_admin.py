@@ -29,27 +29,27 @@ def pages():
 
 @pytest.mark.django_db
 def test_autocomplete_typeahead(admin_client, pages):
+    """
+    No autocompletions for shorter URLs, because that doesn't really make sense.
+    """
     resp = admin_client.get('/admin/varlet/page/urls/', data={'q': 'this/is/a/test'})
     data = json.loads(force_text(resp.content))
     assert data == {
-        'count': 6,
-        'results': [{'name': 'this/is/a'},
-                    {'name': 'this/is'},
-                    {'name': 'this'},
-                    {'name': 'test'},
-                    {'name': 'contains/test/in/it'},
-                    {'name': 'unrelated'}]
+        'count': 0,
+        'results': []
     }
 
 @pytest.mark.django_db
 def test_autocomplete_typeahead2(admin_client, pages):
+    """
+    Try and take the best/longest/matching one.
+    """
     resp = admin_client.get('/admin/varlet/page/urls/', data={'q': 'this/is'})
     data = json.loads(force_text(resp.content))
     assert data == {
-        'count': 3,
-        'results':  [{'name': 'this/is/a'},
-                     {'name': 'this/is/a/test'},
-                     {'name': 'this'}]
+        'count': 2,
+        'results':  [{'name': 'this/is/a/test'},
+                     {'name': 'this/is/a'}]
     }
 
 @pytest.mark.django_db
@@ -58,6 +58,6 @@ def test_autocomplete_typeahead3(admin_client, pages):
     data = json.loads(force_text(resp.content))
     assert data == {
         'count': 2,
-        'results': [{'name': 'this/is/a/test'},
-                    {'name': 'contains/test/in/it'}]
+        'results': [{'name': 'contains/test/in/it'},
+                    {'name': 'this/is/a/test'}]
     }
