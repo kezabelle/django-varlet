@@ -115,9 +115,10 @@ riot.tag2('urlpath-autocomplete', '<yield></yield> <ol if="{open}" class="urlpat
         } else {
             const self = this;
             django.jQuery.getJSON(this.opts.url, {'q': text})
-            .fail(function(data) {
+            .done(function(data) {
                 self.history[text] = data;
-            }).fail(function(data) {
+            })
+            .fail(function(data) {
                 self.history[text] = void(0);
             })
             .always(function(data) {
