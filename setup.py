@@ -50,7 +50,7 @@ KEYWORDS = (
 
 setup(
     name="django-varlet",
-    version="0.2.1",
+    version="0.2.2",
     author="Keryn Knight",
     author_email="django-varlet@kerynknight.com",
     maintainer="Keryn Knight",
@@ -65,7 +65,7 @@ setup(
         "Django>=1.11",
         "djangorestframework>=3.6",
         "swapper>=1.0.0",
-        "django-templateselector>=0.2.1",
+        "django-templateselector>=0.2.2",
     ],
     tests_require=[
         "pytest>=2.6",

@@ -1,8 +1,7 @@
 Change history for django-varlet
 -------------------------------------------------------------
 
-
-?next?
+0.2.2
 ^^^^^^
 * Fixed tests which broke via continuous integration, but didn't with my local
   requirements, because I'd introduced further validation in ``django-templateselector``
