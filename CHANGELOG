@@ -1,10 +1,15 @@
 Change history for django-varlet
 -------------------------------------------------------------
+
+
+?next?
+^^^^^^
+* Fixed tests which broke via continuous integration, but didn't with my local
+  requirements, because I'd introduced further validation in ``django-templateselector``
+
 0.2.1
 ^^^^^^
 * Added typeahead/autocomplete to the URL field for a page.
-
-
 
 0.2.0
 ^^^^^^
