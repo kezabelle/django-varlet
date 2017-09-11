@@ -6,3 +6,6 @@ include .coveragerc
 include CHANGELOG
 global-include *.rst *.py *.html
 global-include varlet/templates *.txt
+recursive-include varlet *.css
+recursive-include varlet *.js
+recursive-include varlet *.tag
