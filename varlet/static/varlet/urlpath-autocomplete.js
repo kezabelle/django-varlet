@@ -8,7 +8,7 @@
     tagger(window.riot)
   }
 })(function(riot, require, exports, module) {
-riot.tag2('urlpath-autocomplete', '<yield></yield> <ol if="{open}" class="urlpath-autocomplete-options"> <li each="{item, index in items.results}" onmouseover="{parent.selectingByMouse}" onclick="{parent.selectByMouse}" class="{\'selecting\': selecting == index}">{item.name}</li> </ol> <span if="{textChanged}" onclick="{this.undoTextChanges}">Reset changes</span>', '', '', function(opts) {
+riot.tag2('urlpath-autocomplete', '<yield></yield> <ol if="{open}" class="urlpath-autocomplete-options" onmouseout="{unselectIfMousing}"> <li each="{item, index in items.results}" onmouseover="{parent.selectingByMouse}" onclick="{parent.selectByMouse}" class="{\'selecting\': selecting == index}"> <em>{item.parts.prefix}</em> <b>{item.parts.match}</b> <em>{item.parts.suffix}</em></li> </ol> <span if="{textChanged}" onclick="{this.undoTextChanges}">Reset changes</span>', '', '', function(opts) {
 
 
     this.inputEl = void(0);
@@ -29,6 +29,7 @@ riot.tag2('urlpath-autocomplete', '<yield></yield> <ol if="{open}" class="urlpat
         27
     ];
     this.selecting = -1;
+    this.mousing = false;
 
     this.text = '';
     this.originalText = '';
@@ -46,47 +47,45 @@ riot.tag2('urlpath-autocomplete', '<yield></yield> <ol if="{open}" class="urlpat
         this.inputEl = django.jQuery('input[type="text"]', this.root).eq(0).attr("autocomplete", "off");
         this.originalText = this.inputEl.val().trim();
 
-        const self = this;
+        const tag = this;
         this.inputEl.on("keydown", function(event) {
-            self.lastKey.push(event.which);
+            tag.lastKey.push(event.which);
 
-            if (self.submitKeys.indexOf(event.which) > -1 && self.selecting !== -1 && self.open) {
+            if (tag.submitKeys.indexOf(event.which) > -1 && tag.selecting !== -1 && tag.open) {
                 event.preventDefault();
             }
 
-            if (self.navigationKeys.indexOf(event.which) > -1 && self.open) {
+            if (tag.navigationKeys.indexOf(event.which) > -1 && tag.open) {
                 event.preventDefault();
-                return self.trigger('navigate', event);
+                return tag.trigger('navigate', event);
             }
         });
         this.inputEl.on("keyup", function(event) {
-            self.text = self.inputEl.val().trim();
-            if (!self.text) {
-                return self.trigger('cancel', event);
+            tag.text = tag.inputEl.val().trim();
+            if (!tag.text) {
+                return tag.trigger('cancel', event);
             }
 
-            if (self.submitKeys.indexOf(event.which) > -1 && self.open) {
-                if (self.selected !== -1) {
-                    return self.trigger('select', event);
+            if (tag.submitKeys.indexOf(event.which) > -1 && tag.open) {
+                if (tag.selected !== -1) {
+                    return tag.trigger('select', event);
                 } else {
-                    return self.trigger('cancel', event);
+                    return tag.trigger('cancel', event);
                 }
             }
-            if (self.cancelKeys.indexOf(event.which) > -1 && self.open) {
+            if (tag.cancelKeys.indexOf(event.which) > -1 && tag.open) {
                 event.preventDefault();
-                return self.trigger('cancel', event);
+                return tag.trigger('cancel', event);
             }
-            if (self.text !== self.originalText) {
-                return self.trigger('text', event);
+            if (tag.text !== tag.originalText) {
+                return tag.trigger('text', event);
             }
         });
         this.inputEl.on("blur", function(evt) {
 
-            if (self.open) {
-                self.text = django.jQuery(this).val();
-                if (self.selecting == -1) {
-                    self.trigger('cancel', evt);
-                }
+            if (tag.open) {
+                tag.text = django.jQuery(this).val();
+                tag.trigger('cancel', evt);
             }
         });
     });
@@ -103,6 +102,7 @@ riot.tag2('urlpath-autocomplete', '<yield></yield> <ol if="{open}" class="urlpat
         } else if (selecting < 0) {
             selecting = this.items.results.length - 1;
         }
+        this.mousing = false;
         this.selecting = selecting;
         this.update();
     });
@@ -113,22 +113,29 @@ riot.tag2('urlpath-autocomplete', '<yield></yield> <ol if="{open}" class="urlpat
             this.items = this.history[text]
             this.update();
         } else {
-            const self = this;
+            const tag = this;
             django.jQuery.getJSON(this.opts.url, {'q': text})
             .done(function(data) {
-                self.history[text] = data;
+                tag.history[text] = data;
             })
             .fail(function(data) {
-                self.history[text] = void(0);
+                tag.history[text] = void(0);
             })
             .always(function(data) {
-                self.items = data;
-                self.update();
+                tag.items = data;
+                tag.update();
             });
         }
     });
     this.selectingByMouse = function(event) {
+        this.mousing = true;
         this.selecting = event.item.index;
+    }.bind(this)
+    this.unselectIfMousing = function(event) {
+        if (this.mousing === true) {
+            this.mousing = false;
+            this.selecting = -1;
+        }
     }.bind(this)
     this.selectByMouse = function(event) {
         this.selecting = event.item.index;
@@ -145,6 +152,7 @@ riot.tag2('urlpath-autocomplete', '<yield></yield> <ol if="{open}" class="urlpat
     });
     this.on('cancel', function(event) {
         this.items = {};
+        this.mousing = false;
         this.selecting = -1;
         this.update();
     });
