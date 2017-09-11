@@ -1,19 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import
 
-import os
-
-import operator
-import re
-from difflib import SequenceMatcher
-from itertools import chain
-
 from django.core.exceptions import ValidationError
 try:
     from django.urls import reverse, NoReverseMatch
 except ImportError:
     from django.core.urlresolvers import reverse, NoReverseMatch
-from django.utils.six.moves import reduce, range
+from django.utils.six.moves import zip_longest
 from django.http import JsonResponse
 from functools import update_wrapper
 
@@ -67,34 +60,21 @@ class BasePageAdmin(admin.ModelAdmin):
         except ValidationError:
             return error_response
 
-        query3 = query2.split("/")
-        query4 = tuple("/".join(query3[0:x]) for x in range(1, len(query3)+1))
-        if not query4:
-            return error_response
-        query5 = (Q(url__icontains=x) for x in query4)
-        query7 = reduce(operator.or_, query5)
-
-        def sorty(x):
-            input_length = len(query2)
-            result_length = len(x)
-            matcher = SequenceMatcher(None, query2, x)
-            longest = matcher.find_longest_match(0, input_length, 0, result_length)
-            prefix = os.path.commonprefix([query2, x])
-            prefix_length = len(prefix) or -1
-            result =  matcher.ratio() + longest.size + prefix_length + result_length
-            return result
-
         data = tuple(self.model.objects
                      .distinct()
                      .values_list('url', flat=True)
                      .exclude(url=query2)
-                     .filter(query7)
+                     .filter(url__icontains=query2)
                      .annotate(url_length=Length('url'))
-                     .filter(url_length__gt=len(query2))[0:50]
+                     .filter(url_length__gt=len(query2))
+                     .order_by('-url_length')[0:25]
                      .iterator())
-        sorted_data = tuple({'name': obj}
-                            for obj in sorted(data, key=sorty, reverse=True))
-        return JsonResponse(data={'results': sorted_data[0:12], 'count': len(data)})
+        names = ('prefix', 'match', 'suffix')
+        sorted_data = tuple(
+            {'name': obj, 'parts': dict(zip_longest(names, obj.partition(query2)))}
+            for obj in data
+        )
+        return JsonResponse(data={'results': sorted_data[0:5], 'count': len(data)})
 
 
 class PageAdmin(BasePageAdmin):
