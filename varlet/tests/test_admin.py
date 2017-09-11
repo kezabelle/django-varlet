@@ -48,8 +48,12 @@ def test_autocomplete_typeahead2(admin_client, pages):
     data = json.loads(force_text(resp.content))
     assert data == {
         'count': 2,
-        'results':  [{'name': 'this/is/a/test'},
-                     {'name': 'this/is/a'}]
+        'results': [{'name': 'this/is/a/test',
+                     'parts': {'match': 'this/is', 'prefix': '',
+                               'suffix': '/a/test'}},
+                    {'name': 'this/is/a',
+                     'parts': {'match': 'this/is', 'prefix': '',
+                               'suffix': '/a'}}]
     }
 
 @pytest.mark.django_db
@@ -58,6 +62,10 @@ def test_autocomplete_typeahead3(admin_client, pages):
     data = json.loads(force_text(resp.content))
     assert data == {
         'count': 2,
-        'results': [{'name': 'contains/test/in/it'},
-                    {'name': 'this/is/a/test'}]
+        'results': [{'name': 'contains/test/in/it',
+                     'parts': {'match': 'test', 'prefix': 'contains/',
+                               'suffix': '/in/it'}},
+                    {'name': 'this/is/a/test',
+                     'parts': {'match': 'test', 'prefix': 'this/is/a/',
+                               'suffix': ''}}]
     }
