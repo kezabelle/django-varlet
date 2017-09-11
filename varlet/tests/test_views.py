@@ -31,24 +31,23 @@ def test_page_fails_with_nonexistant_template(client):
 @pytest.mark.django_db
 def test_page_renders_html_ok(client):
     Page = swapper.load_model('varlet', 'Page')
-    homepage = Page(url='', template='admin/filter.html')
+    homepage = Page(url='', template='varlet/pages/layouts/test_template.html')
     homepage.full_clean()
     homepage.save()
     response = client.get(homepage.get_absolute_url())
     assert response.status_code == 200
     response.render()
-    assert '<h3>' in force_text(response.content)
-    assert '<ul>' in force_text(response.content)
+    assert '<b>Test template</b>' in force_text(response.content)
 
 
 @pytest.mark.django_db
 def test_page_renders_json_listview_ok(client):
     Page = swapper.load_model('varlet', 'Page')
-    homepage = Page(url='', template='admin/filter.html')
+    homepage = Page(url='', template='varlet/pages/layouts/test_template.html')
     homepage.full_clean()
     homepage.save()
     for x in range(1, 3):
-        y = Page.objects.create(url=str(x), template='admin/filter.html')
+        y = Page.objects.create(url=str(x), template='varlet/pages/layouts/test_template.html')
     response = client.get(homepage.get_absolute_url(), HTTP_ACCEPT="application/json")
     assert response.status_code == 200
     data = json.loads(force_text(response.content))
@@ -59,7 +58,7 @@ def test_page_renders_json_listview_ok(client):
 @pytest.mark.django_db
 def test_page_renders_json_detailview_ok(client):
     Page = swapper.load_model('varlet', 'Page')
-    page = Page(url='/test/', template='admin/filter.html')
+    page = Page(url='/test/', template='varlet/pages/layouts/test_template.html')
     page.full_clean()
     page.save()
     response = client.get(page.get_absolute_url(), HTTP_ACCEPT="application/json")
@@ -74,7 +73,7 @@ def test_sitemap_includes_urls(client):
     Page = swapper.load_model('varlet', 'Page')
     pages = []
     for x in range(1, 5):
-        page = Page(url=str(x), template='admin/filter.html')
+        page = Page(url=str(x), template='varlet/pages/layouts/test_template.html')
         page.full_clean()
         page.save()
         pages.append(page)

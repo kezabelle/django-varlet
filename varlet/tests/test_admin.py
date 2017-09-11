@@ -21,7 +21,7 @@ def pages():
     Page = swapper.load_model('varlet', 'Page')
     pages = []
     for page in PAGES:
-        page = Page(url=page, template='admin/filter.html')
+        page = Page(url=page, template='varlet/pages/layouts/test_template.html')
         page.full_clean()
         page.save()
         pages.append(page)
