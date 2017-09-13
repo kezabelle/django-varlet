@@ -2,9 +2,9 @@ django-varlet
 =============
 
 :author: Keryn Knight
-:version: 0.2.2
+:version: 0.2.3
 
-.. |travis_stable| image:: https://travis-ci.org/kezabelle/django-varlet.svg?branch=0.2.2
+.. |travis_stable| image:: https://travis-ci.org/kezabelle/django-varlet.svg?branch=0.2.3
   :target: https://travis-ci.org/kezabelle/django-varlet
 
 .. |travis_master| image:: https://travis-ci.org/kezabelle/django-varlet.svg?branch=master
@@ -13,7 +13,7 @@ django-varlet
 ==============  ======
 Release         Status
 ==============  ======
-stable (0.2.2)  |travis_stable|
+stable (0.2.3)  |travis_stable|
 master          |travis_master|
 ==============  ======
 

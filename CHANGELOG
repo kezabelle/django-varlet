@@ -1,8 +1,7 @@
 Change history for django-varlet
 -------------------------------------------------------------
 
-
-?next?
+0.2.3
 ^^^^^^
 * Autocomplete outside of the tests & demo project (ie: any actual usage)
   wasn't working, and worse, was causing a ``TemplateDoesNotExist`` exception
